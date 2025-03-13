@@ -27,6 +27,7 @@ run("SimHL");
 Setting.agent = agent;
 Setting.logger = logger;
 Setting.time = time;
+if exist("motive","var"); Setting.motive = motive;end
 if exist("env","var"); Setting.env = env;end
 if exist("in_prog_func","var"); Setting.in_prog_func = in_prog_func;end
 if exist("post_func","var"); Setting.post_func = post_func;end

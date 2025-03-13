@@ -24,19 +24,19 @@ if app.fExp % experiment
         case 'f'
           if strcmp(app.cha0,'t') % "flight" is allowed after "take-off"
             app.LampLabel.Text = "Flight";
-            app.Flight;
+            % app.Flight;
           end
         case 'l'
           app.LampLabel.Text = "Landing";
-          app.Landing;
+          % app.Landing;
         case 't'
           if strcmp(app.cha0,'a') % "take-off" is allowed after "arming"
             app.LampLabel.Text = "Take-off";
-            app.Takeoff;
+            % app.Takeoff;
           end
         case 'a'
           app.LampLabel.Text = "Arming";
-          app.Arming;
+          % app.Arming;
           app.Lamp.Color = [1 0 0];
       end
       app.cha0 = app.cha;

@@ -1,5 +1,6 @@
 function set_mode(app)
 Setting = app.initial_setting;
+app.time = Setting.time;
 app.reset_app;
 % run(app.mode);
 if isfield(Setting,"do_calculation")
@@ -31,7 +32,6 @@ else
   if isfield(Setting,"in_prog_func"); app.in_prog = Setting.in_prog_func;     end
   if isfield(Setting,"post_func"); app.post = Setting.post_func;      end
 end
-app.time = Setting.time;
 app.TimeSlider.Value = 0;
 app.TimeSlider.Limits = [Setting.time.ts Setting.time.te];
 app.TimeSlider.MajorTicks = Setting.time.ts:(Setting.time.te-Setting.time.ts)/5:Setting.time.te;
