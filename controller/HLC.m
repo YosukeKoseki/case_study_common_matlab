@@ -40,13 +40,12 @@ classdef HLC < handle
       %if isfield(obj.param,'dt')
       if isfield(varargin{1},'dt') && varargin{1}.dt <= obj.param.dt
         dt = varargin{1}.dt;
-      else
-        dt = obj.param.dt;
-        % vf = Vf(x,xd',P,F1);
-        % vs = Vs(x,xd',vf,P,F2,F3,F4);
-      end
-        vf = Vfd(dt,x,xd',P,F1);
+         vf = Vfd(dt,x,xd',P,F1);
         vs = Vsd(dt,x,xd',vf,P,F2,F3,F4);
+      else
+        vf = Vf(x,xd',P,F1);
+        vs = Vs(x,xd',vf,P,F2,F3,F4);
+      end
       %disp([xd(1:3)',x(5:7)',xd(1:3)'-xd0(1:3)']);
       tmp = Uf(x,xd',vf,P) + Us(x,xd',vf,vs',P);
       % max,min are applied for the safty

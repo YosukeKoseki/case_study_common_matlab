@@ -9,6 +9,7 @@ classdef DRONE < handle
     reference
     controller
     input_transform
+    cha_allocation
     id = 1
   end
 

@@ -1,7 +1,7 @@
 function Controller = Controller_PID(dt,param)
 arguments
   dt
-  param.Kc % 比例ゲイン
+  param.Kc = 1;% 比例ゲイン
   param.Tc = 0; % 振動周期
   param.type = "P"; % P or PI or PID  : ジーグラ・ニコルスの限界感度法
 end

@@ -1,2 +1,2 @@
-takeoff_ref = TAKEOFF_REFERENCE(agent,[]);
-landing_ref = LANDING_REFERENCE(agent,dt,0.1);
+agent.reference.takeoff = TAKEOFF_REFERENCE(agent,[]);
+agent.landing = LANDING_REFERENCE(agent,dt,0.1);

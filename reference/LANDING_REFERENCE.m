@@ -24,7 +24,7 @@ classdef LANDING_REFERENCE < handle
       % [Input] time,cha,logger,env
       if isempty(obj.result.state.xd) % first take
         obj.base_time=varargin{1}.t;
-        obj.base_state = [obj.self.estimator.result.state.p(1:2);obj.result.state.p(3)]; % x,y : current position, z : reference using at flight phase
+        obj.base_state = [obj.self.estimator.result.state.p(1:2);obj.self.reference.result.state.p(3)]; % x,y : current position, z : reference using at flight phase
         obj.result.state.xd = [obj.base_state;zeros(17,1)];
         obj.th_offset = obj.self.input_transform.param.th_offset;
       end

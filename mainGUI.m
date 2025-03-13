@@ -17,9 +17,18 @@ userpath('clear');
 %%
 % each method's arguments : app.time,app.cha,app.logger,app.env,app.agent,i
 clc
-SimBaseMode = ["SimHL","SimPointMass", "SimVehicle", "SimSuspendedLoad", "SimVoronoi", "SimFHL", "SimFHL_Servo", "SimLiDAR", "SimFT", "SimEL", "SimMPC_Koopman"];
+SimBaseMode = ["SimVoronoi", "SimHL","SimPointMass", "SimVehicle", "SimSuspendedLoad", "SimFHL", "SimFHL_Servo", "SimLiDAR", "SimFT", "SimEL", "SimMPC_Koopman"];
 ExpBaseMode = ["ExpTestMotiveConnection", "ExpHL", "ExpFHL", "ExpFHL_Servo", "ExpFT", "ExpEL", "ExpMPC_Koopman"];
-fExp = 0;
-fDebug = 1; % 1: active : for debug function
-PInterval = 0.6; % sec : poling interval for emergency stop
-gui = SimExp(fExp, fDebug, PInterval);
+Setting.fExp = 0;
+Setting.fDebug = 1; % 1: active : for debug function
+Setting.PInterval = 0.6; % sec : poling interval for emergency stop
+% run("SimVoronoi");
+run("SimHL");
+Setting.agent = agent;
+Setting.logger = logger;
+Setting.time = time;
+if exist("env","var"); Setting.env = env;end
+if exist("in_prog_func","var"); Setting.in_prog_func = in_prog_func;end
+if exist("post_func","var"); Setting.post_func = post_func;end
+gui = SimExp(Setting);
+% gui = OSimExp_converted(Setting);

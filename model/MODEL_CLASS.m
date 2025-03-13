@@ -98,10 +98,11 @@ classdef MODEL_CLASS < dynamicprops & handle
 
     end
 
-    function [] = do(obj, varargin)
+    function result = do(obj, varargin)
       
       cha = varargin{2};
       if (cha == 'q' || cha == 's' || cha == 'a')
+        result = [];
         return
       end
       u = obj.self.controller.result.input;
@@ -138,6 +139,7 @@ classdef MODEL_CLASS < dynamicprops & handle
       end
 
       obj.result = obj.state;
+      result = obj.result;
     end
 
     function [] = set_state(obj, varargin)
