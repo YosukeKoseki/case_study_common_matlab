@@ -8,7 +8,7 @@ classdef TAKEOFF_REFERENCE < handle
     te = 5;
     zd = 1; % goal altitude
     result
-    th_offset
+    th_offset = [];
     th_offset0 = 200;
   end
 
@@ -24,7 +24,9 @@ classdef TAKEOFF_REFERENCE < handle
         obj.base_time=varargin{1}.t;
         obj.base_state = obj.self.estimator.result.state.p;
         obj.result.state.xd = [obj.base_state;zeros(17,1)];
-        obj.th_offset = obj.self.input_transform.param.th_offset;
+        if isfield(obj.self.input_transform,"param")
+            obj.th_offset = obj.self.input_transform.param.th_offset;
+        end
       end
       obj.result.state.xd = obj.gen_ref_for_take_off(varargin{1}.t-obj.base_time);
       obj.result.state.p = obj.result.state.xd(1:3,1);

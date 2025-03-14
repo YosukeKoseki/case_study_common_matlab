@@ -93,7 +93,7 @@ classdef SimExp < matlab.apps.AppBase
           app.update_timer = timer('Period', app.PInterval,... % poling interval
             'ExecutionMode', 'fixedSpacing', ... % execution mode
             'TasksToExecute', Inf, ... % trial number
-            'TimerFcn', @app.mytimer_fun); % callback function
+            'TimerFcn', @app.emg_stop); % callback function
 
           app.loop();
         end
