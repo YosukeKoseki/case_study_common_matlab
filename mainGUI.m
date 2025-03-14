@@ -22,5 +22,5 @@ ExpBaseMode = ["ExpTestMotiveConnection", "ExpHL", "ExpFHL", "ExpFHL_Servo", "Ex
 Setting.fExp = 0;
 Setting.fDebug = 1; % 1: active : for debug function
 Setting.PInterval = 0.6; % sec : poling interval for emergency stop
-Setting.mode = "SimHL";
+Setting.mode = "ExpHL";
 gui = SimExp(Setting);

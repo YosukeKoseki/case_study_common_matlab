@@ -20,9 +20,9 @@ if isprop(agent,"cha_allocation")
   for cha = ['a','t','f','l']
     if isfield(al,cha)
       for i = ["sensor","estimator","controller","reference","input_transform","plant"]
-        if isfield(al.(cha),i)
-          AL.(cha).(i) = al.(cha).(i);
-        end
+          if isfield(al.(cha),i)
+              AL.(cha).(i) = al.(cha).(i);
+          end
       end
     end
   end

@@ -35,7 +35,8 @@ agent.controller = HLC(agent,Controller_HL(dt));
 %run("ExpBase");
 agent.reference.takeoff = TAKEOFF_REFERENCE(agent,[]);
 agent.reference.landing = LANDING_REFERENCE(agent,dt,0.1);
-agent.cha_allocation = struct("reference",["time_varying"],"t",struct("reference",["takeoff"]),"l",struct("reference","landing"));
+agent.cha_allocation = struct("reference",["time_varying"], ...
+    "t",struct("reference",["takeoff"]),"l",struct("reference","landing"));
 motive.getData(agent);
 
 function dfunc(app)

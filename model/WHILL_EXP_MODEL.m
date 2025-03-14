@@ -66,7 +66,7 @@ methods
 
     end
 
-    function do(obj, u, varargin)
+    function u = do(obj, u, varargin)
 
         if length(varargin) == 1
 
