@@ -36,13 +36,14 @@ agent.parameter.set("cableL",0.955);%0.992,0.647,p0.613,0.460
 agent.parameter.set("loadmass",0.0968);%0.968
 agent.estimator = EKF(agent, Estimator_EKF(agent,dt,MODEL_CLASS(agent,Model_Suspended_Load(dt, initial_state, 1,agent,1)), ["p", "q", "pL", "pT"]));
 
-agent.sensor.forload = FOR_LOAD(agent, Estimator_Suspended_Load(2));%[1,1+N]%for_loadで機体と牽引物の位置、姿勢をstateクラスに格納
 agent.sensor.motive = MOTIVE(agent, Sensor_Motive(1,0, motive));%荷物のも取ってこれるはず
+agent.sensor.forload = FOR_LOAD(agent, Estimator_Suspended_Load(2));%[1,1+N]%for_loadで機体と牽引物の位置、姿勢をstateクラスに格納
 % agent.sensor.do = @sensor_do;
 
 agent.input_transform = THRUST2THROTTLE_DRONE(agent,InputTransform_Thrust2Throttle_drone()); % 推力からスロットルに変換
 % agent.reference.timevarying = TIME_VARYING_REFERENCE(agent,{"gen_ref_saddle",{"freq",12,"orig",[0;0;0.5],"size",[1,1,0.2*0]*1},"HL"});
-agent.reference.timevarying = TIME_VARYING_REFERENCE_SUSPENDEDLOAD(agent,{"gen_ref_saddle",{"freq",12,"orig",[0;0;0.5],"size",[1,1,0.2*0]*1},"HL"});
+%agent.reference.timevarying = TIME_VARYING_REFERENCE_SUSPENDEDLOAD(agent,{"gen_ref_saddle",{"freq",12,"orig",[0;0;0.5],"size",[1,1,0.2*0]*1},"HL"});
+agent.reference.timevarying = TIME_VARYING_REFERENCE(agent,{"gen_ref_saddle",{"freq",12,"orig",[0;0;0.5],"size",[1,1,0.2*0]*1},"HL"});
 % agent.reference.point = MY_POINT_REFERENCE(agent,{struct("f",[1;1;0.4],"g",[0;1;0.4],"h",[-1;1;0.4],"j",[-1;0;0.4],"k",[-1;-1;0.4]),10});
 agent.controller = HLC_SUSPENDED_LOAD(agent,Controller_HL_Suspended_Load(dt,agent));
 

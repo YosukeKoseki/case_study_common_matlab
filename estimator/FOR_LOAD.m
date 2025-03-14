@@ -1,4 +1,4 @@
-classdef FOR_LOAD < SENSOR_CLASS
+classdef FOR_LOAD < handle
       properties
         result                  % 現在時刻の結果
         rigid_num               % 剛体番号
@@ -32,8 +32,8 @@ classdef FOR_LOAD < SENSOR_CLASS
         
         function result = do(obj,varargin)
             %   param : optional
-            tc          = varargin{1}{1}.t;                                     % 現在時刻
-            cha         = varargin{1}{2};                                       % phase
+            tc          = varargin{1}.t;                                     % 現在時刻
+            cha         = varargin{2};                                       % phase
             sp          = obj.self.sensor.motive.result.state.p;                % 機体位置
             sq          = obj.self.sensor.motive.result.state.q;                % 機体角度
             spL         = obj.self.sensor.motive.result.rigid(obj.rigid_num).p; % 牽引物位置

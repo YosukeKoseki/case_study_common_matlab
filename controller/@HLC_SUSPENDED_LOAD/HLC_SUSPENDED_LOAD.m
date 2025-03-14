@@ -66,7 +66,7 @@ classdef HLC_SUSPENDED_LOAD < handle
         %物理パラメータ
             P           = [obj.self.parameter.get(["mass", "jx", "jy", "jz", "gravity", "loadmass", "cableL"]),0,0];
         %拡張質量システムのekfで牽引物の質量を求める場合
-            if contains(obj.self.estimator.model.name,"Load_mL")
+            if isprop(obj.self.estimator.result.state,"mL")
                 %landingのとき
                 if varargin{2} == "l"
                     if isempty(obj.cableL_landing) || isempty(obj.mLlanding)
@@ -74,6 +74,7 @@ classdef HLC_SUSPENDED_LOAD < handle
                         obj.mLlanding   = max(model.state.mL,0);                       % landing開始時の質量
                     end
                     % 推定質量がobj.mLlandingの90%未満またはlanding開始時の機体と牽引物の距離のz方向の90%の長さより現在の差の距離の方が短い場合の時は牽引物質量0
+                    %real_pL = obj.self.sensor.result.state.real_pL(3);
                     real_pL = obj.self.sensor.result.state.real_pL(3);
                     % if model.state.mL < obj.mLlanding*0.5 || model.state.p(3) - model.state.pL(3) < obj.cableL_landing(3)*0.9 || obj.isGround == 1
                     % if model.state.mL < obj.mLlanding*0.5 || model.state.p(3) - real_pL < obj.cableL_landing(3)*0.9 || obj.isGround == 1
@@ -118,7 +119,7 @@ classdef HLC_SUSPENDED_LOAD < handle
             % h234            = obj.H234_SuspendedLoadxyDst(x,xd',vf,P);       % ただの単位行列なのでなくてもいい
             tic
             beta2           = obj.Beta2_SuspendedLoadxyDst(x,xd',vf,P);  % 第二層のbetaの逆行列
-            vs_alpha2       = obj.Vs_alpha2_SuspendedLoadxyDst(x,xd',vf,vs',P);  % 第二層のvs - alpha
+            vs_alpha2       = obj.V2_alpha2_SuspendedLoadxyDst(x,xd',vf,vs',P);  % 第二層のvs - alpha
             us              = beta2\vs_alpha2;                   % 第二層の実入力（roll,pitch,yawのトルク）への変換：bate^(-1)*(vs - alpha)%h234*invbeta2*a2;
             obj.result.aa=toc;
             tmp             = [uf(1);us];                                  % 実入力へ変換

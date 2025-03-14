@@ -142,7 +142,11 @@ classdef MODEL_CLASS < dynamicprops & handle
     end
 
     function [] = set_state(obj, varargin)
-      obj.state.set_state(varargin{1});
+        if length(varargin)>1
+            obj.state.set_state(varargin{:});
+        else
+            obj.state.set_state(varargin{1});
+        end
     end
 
     function state = get(obj, varargin)
