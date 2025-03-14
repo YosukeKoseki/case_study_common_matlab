@@ -1,4 +1,3 @@
-
 function stop(app)
 app.fStart = 0;
 app.StartButton.Text = "Start";

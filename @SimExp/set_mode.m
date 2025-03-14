@@ -1,7 +1,7 @@
 function set_mode(app)
 Setting = app.initial_setting;
 app.time = Setting.time;
-app.reset_app;
+
 % run(app.mode);
 if isfield(Setting,"do_calculation")
   app.do_calculation = @(A) Setting.do_calculation(A);

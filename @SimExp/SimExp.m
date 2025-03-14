@@ -73,8 +73,9 @@ classdef SimExp < matlab.apps.AppBase
       app.fDebug = Setting.fDebug;
       app.PInterval = Setting.PInterval;
       app.initial_setting = Setting;
-      app.stop
-      app.set_mode();
+      app.reset_app;      
+      % app.stop
+      % app.set_mode();
       % appearance
       app.LampLabel.HorizontalAlignment = 'left';
       %app.UIFigure.WindowState = 'maximized';
@@ -133,7 +134,7 @@ classdef SimExp < matlab.apps.AppBase
 
     % Button pushed function: ReloadButton
     function reload_mode(app, event)
-      app.set_mode;
+      app.reset_app();
     end
 
     % Changes arrangement of the app based on UIFigure width
