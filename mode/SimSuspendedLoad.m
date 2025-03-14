@@ -21,14 +21,16 @@ agent = DRONE;
 agent.parameter = DRONE_PARAM_SUSPENDED_LOAD("DIATONE");
 agent.plant = MODEL_CLASS(agent,Model_Suspended_Load(dt, initial_state,1,agent));%id,dt,type,initial,varargin
 agent.estimator = EKF(agent, Estimator_EKF(agent,dt,MODEL_CLASS(agent,Model_Suspended_Load(dt, initial_state, 1,agent)), ["p", "q"],"B",blkdiag([0.5*dt^2*eye(6);dt*eye(6)],[0.5*dt^2*eye(3);dt*eye(3)],[zeros(3,3);dt*eye(3)]),"Q",blkdiag(eye(3)*1E-3,eye(3)*1E-3,eye(3)*1E-3,eye(3)*1E-8)));
-agent.sensor = DIRECT_SENSOR(agent, 0.0);
-agent.reference = TIME_VARYING_REFERENCE_SUSPENDEDLOAD(agent,{"Case_study_trajectory",{[0;0;1]},"Suspended"});
-agent.controller.hlc = HLC(agent,Controller_HL(dt));
-agent.controller.load = HLC_SUSPENDED_LOAD(agent,Controller_HL_Suspended_Load(dt,agent));
-agent.controller.do = @controller_do;
+%agent.sensor = DIRECT_SENSOR(agent, 0.0);
+agent.sensor = MOTIVE(agent, Sensor_Motive(1,0, motive));
+agent.reference.timevarying = TIME_VARYING_REFERENCE_SUSPENDEDLOAD(agent,{"gen_ref_saddle",{"freq",12,"orig",[0;0;0.5],"size",[1,1,0.2*0]*1},"HL"});
+% agent.controller.hlc = HLC(agent,Controller_HL(dt));
+agent.controller = HLC_SUSPENDED_LOAD(agent,Controller_HL_Suspended_Load(dt,agent));
+% agent.controller.do = @controller_do;
 agent.controller.result.input = [(agent.parameter.loadmass+agent.parameter.mass)*agent.parameter.gravity;0;0;0];
 
 run("ExpBase");
+agent.cha_allocation.reference = "timevarying";
 %%
 % clc
 % for i = 1:time.te
@@ -44,15 +46,9 @@ run("ExpBase");
 % end
 
 %%
-logger.plot({1,"plant.result.state.pL","p"},{1,"input",""})
+% logger.plot({1,"plant.result.state.pL","p"},{1,"input",""})
 % logger.plot({1,"plant.result.state.pL","p"})
 %%
-function result = controller_do(varargin)
-controller = varargin{5}.controller;
-result = controller.hlc.do(varargin);
-result = merge_result(result,controller.load.do(varargin));
-varargin{5}.controller.result = result;
-end
 
 function post(app)
 app.logger.plot({1, "p", "er"},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);

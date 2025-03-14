@@ -9,6 +9,7 @@ classdef TIME_VARYING_REFERENCE_SUSPENDEDLOAD < handle
         cha='s';
         dfunc
         result
+        nowhover
     end
 
     methods
@@ -28,7 +29,7 @@ classdef TIME_VARYING_REFERENCE_SUSPENDEDLOAD < handle
             if length(args) > 2
                 if strcmp(args{3}, "Suspended")
                     obj.func = gen_ref_for_HL(obj.func);
-                    obj.result.state = STATE_CLASS(struct('state_list', ["xd", "p", "q", "v"], 'num_list', [24, 3, 3, 3]));                    
+                    obj.result.state = STATE_CLASS(struct('state_list', ["xd", "p", "q", "v"], 'num_list', [length(obj.func(0)), 3, 3, 3]));                    
                 end
             else
                 obj.result.state = STATE_CLASS(struct('state_list', ["xd", "p", "q", "v"], 'num_list', [length(obj.func(0)), 3, 3, 3]));
@@ -44,13 +45,19 @@ classdef TIME_VARYING_REFERENCE_SUSPENDEDLOAD < handle
         function result = do(obj, varargin)  
            %Param={time,FH}
            obj.cha = varargin{2};
-           if obj.cha=='f'&& ~isempty(obj.t)    %flightからreferenceの時間を開始
-                t = varargin{1}.t-obj.t; % 目標重心位置（絶対座標）
-           else
-                obj.t=varargin{1}.t;
-                t = obj.t;
-           end           
+           % if obj.cha=='f'&& ~isempty(obj.t)    %flightからreferenceの時間を開始
+           %      t = varargin{1}.t-obj.t; % 目標重心位置（絶対座標）
+           % else
+           %      obj.t=varargin{1}.t;
+           %      t = obj.t;
+           % end           
+           if obj.cha=='f'&& isempty(obj.t)    %flightからreferenceの時間を開始
+                obj.t=varargin{1}.t; % 目標重心位置（絶対座標）
+                % obj.nowhover=obj.self.estimator.result.state.pL;%(1:2);obj.result.state.p(3)];ケシワスレナイ
+           end  
+           t = varargin{1}.t-obj.t;
            obj.result.state.xd = obj.func(t); % 目標重心位置（絶対座標）
+           % obj.result.state.xd(1:3)=obj.nowhover;%消し忘れない
            obj.result.state.p = obj.result.state.xd(1:3);
            result = obj.result;
         end
