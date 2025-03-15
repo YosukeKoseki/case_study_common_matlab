@@ -47,7 +47,14 @@ end
 motive.getData(agent);
 
 agent(1).estimator.forload = FOR_LOAD(agent(1), Estimator_Suspended_Load(2));%[1,1+N]%for_loadで機体と牽引物の位置、姿勢をstateクラスに格納
-agent(1).estimator.ekf = EKF(agent(1), Estimator_EKF(agent(1),dt,MODEL_CLASS(agent(1),Model_Suspended_Load(dt, initial_state, 1,agent(1),1)), ["p", "q", "pL", "pT"]));%expの流用
+Estimator = Estimator_EKF(agent(1),dt,MODEL_CLASS(agent(1),Model_Suspended_Load(dt, initial_state, 1,agent(1),1)), ["p", "q", "pL", "pT"]);
+	Estimator.sensor_func = @EKF_muliti
+function state = EKF_multi(self,param) 
+r =self.sensor.result.rigid;
+state = r(1);
+state.pL = r(2).p;
+end
+agent(1).estimator.ekf = EKF(agent(1), Estimator );%expの流用
 agent(1).estimator.result = agent(1).estimator.ekf.do(time,'a',logger,[],agent,1);
 % agent(1).parameter.set("loadmass",0.3);
 % agent(1).sensor = DIRECT_SENSOR(agent(1), 0.002*0);%motiveとforloadに書き換えると実験と同じ条件でできる
