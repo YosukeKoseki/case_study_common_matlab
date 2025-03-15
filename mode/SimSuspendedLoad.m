@@ -51,7 +51,8 @@ Estimator = Estimator_EKF(agent(1),dt,MODEL_CLASS(agent(1),Model_Suspended_Load(
 	Estimator.sensor_func = @EKF_muliti
 function state = EKF_multi(self,param) 
 r =self.sensor.result.rigid;
-state = [r(1).p;r(1).q; r(2).p; r(2).q;];
+d = r(2).p - r(1).p;
+state = [r(1).p;r(1).q; r(2).p; d/norm(d)];
 end
 agent(1).estimator.ekf = EKF(agent(1), Estimator );%expの流用
 agent(1).estimator.result = agent(1).estimator.ekf.do(time,'a',logger,[],agent,1);
