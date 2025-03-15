@@ -41,7 +41,7 @@ agent(2).estimator.do = @(obj, varargin)[];
 agent(2).reference.do = @(obj, varargin)[];
 agent(2).controller.do = @load_controller;
 function result = load_controller(~,~,~,~,agent,~)
-    agent(2).plant.set_state("p",agent(1).plant.state.pL);
+    agent(2).plant.set_state("p",agent(1).plant.state.pL,"q",agent(1).plant.state.pT);
     result = agent(2).plant.state;
 end
 motive.getData(agent);
@@ -53,6 +53,7 @@ function state = EKF_multi(self,param)
 r =self.sensor.result.rigid;
 state = r(1);
 state.pL = r(2).p;
+state.pT = r(2).q;
 end
 agent(1).estimator.ekf = EKF(agent(1), Estimator );%expの流用
 agent(1).estimator.result = agent(1).estimator.ekf.do(time,'a',logger,[],agent,1);
