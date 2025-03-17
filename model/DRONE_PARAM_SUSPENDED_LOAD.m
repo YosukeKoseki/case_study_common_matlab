@@ -139,6 +139,13 @@ classdef DRONE_PARAM_SUSPENDED_LOAD < matlab.mixin.SetGetExactNames
                 end
             end
         end
+        function set(obj,p,v)
+          % 制御モデルの値を設定する関数
+          for i = length(p):-1:1
+              obj.(p(i)) = v(i);
+              obj.parameter(strcmp(obj.parameter_name,p(i))) = v(i);
+          end
+        end
         function set_model_error(obj,p,v)
             for i = length(p):-1:1
                 obj.model_error(strcmp(obj.parameter_name,p(i))) = v(i);

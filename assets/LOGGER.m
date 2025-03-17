@@ -145,31 +145,35 @@ classdef LOGGER < handle % handleクラスにしないとmethodの中で値を�
           % 注：サイズの固定されている数値データだけ保存可能
         end
 
-        for n = obj.target
-
+        for n = 1:length(obj.target)
+          N = obj.target(n);
           for i = 1:length(obj.agent_items) % sensor,estimator,reference以外のみ
             str = strsplit(obj.agent_items(i), '.');
-            tmp = agent(n);
+            tmp = agent(N);
             obj.Data.agent(n).(str{1}){obj.k} = tmp.(str{1});
           end
 
-          obj.Data.agent(n).sensor.result{obj.k} = agent(n).sensor.result;
-          obj.Data.agent(n).estimator.result{obj.k} = agent(n).estimator.result;
-          obj.Data.agent(n).reference.result{obj.k} = agent(n).reference.result;
-          obj.Data.agent(n).controller.result{obj.k} = agent(n).controller.result;
+          obj.Data.agent(n).sensor.result{obj.k} = agent(N).sensor.result;
+          obj.Data.agent(n).estimator.result{obj.k} = agent(N).estimator.result;
+          obj.Data.agent(n).reference.result{obj.k} = agent(N).reference.result;
+          obj.Data.agent(n).controller.result{obj.k} = agent(N).controller.result;
 
-          if isfield(agent(n).sensor.result, "state")
-            obj.Data.agent(n).sensor.result{obj.k}.state = state_copy(agent(n).sensor.result.state);
+          if isfield(agent(N).sensor.result, "state")
+            obj.Data.agent(n).sensor.result{obj.k}.state = state_copy(agent(N).sensor.result.state);
           end
 
-          obj.Data.agent(n).estimator.result{obj.k}.state = state_copy(agent(n).estimator.result.state);
-          obj.Data.agent(n).reference.result{obj.k}.state = state_copy(agent(n).reference.result.state);
-          obj.Data.agent(n).input{obj.k} = agent(n).controller.result.input;
+          if isfield(agent(N).estimator.result,'state')
+            obj.Data.agent(n).estimator.result{obj.k}.state = state_copy(agent(N).estimator.result.state);
+          end
+          if isfield(agent(N).reference.result,'state')
+            obj.Data.agent(n).reference.result{obj.k}.state = state_copy(agent(N).reference.result.state);
+          end
+          obj.Data.agent(n).input{obj.k} = agent(N).controller.result.input;
 
           if obj.fExp
-            obj.Data.agent(n).inner_input{obj.k} = agent(n).input_transform.result;
+            obj.Data.agent(n).inner_input{obj.k} = agent(N).input_transform.result;
           else
-            obj.Data.agent(n).plant.result{obj.k}.state = state_copy(agent(n).plant.state);
+            obj.Data.agent(n).plant.result{obj.k}.state = state_copy(agent(N).plant.state);
           end
 
         end
