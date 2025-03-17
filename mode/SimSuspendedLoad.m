@@ -36,23 +36,23 @@ load_setting.num_list = [3,3];
 load_setting.initial = initial_load;
 Model.param = load_setting;
 agent(2).plant = MODEL_CLASS(agent(2),Model);
-%agent(2).sensor.do = @(obj, varargin)[];
+agent(2).plant.stop = [];
 agent(2).estimator.do = @(obj, varargin)[];
 agent(2).reference.do = @(obj, varargin)[];
 agent(2).controller.do = @load_controller;
 function result = load_controller(~,~,~,~,agent,~)
     agent(2).plant.set_state("p",agent(1).plant.state.pL,"q",agent(1).plant.state.pT);
-    result = agent(2).plant.state;
+    result.input = agent(2).plant.state;
 end
 motive.getData(agent);
 
 agent(1).estimator.forload = FOR_LOAD(agent(1), Estimator_Suspended_Load(2));%[1,1+N]%for_loadで機体と牽引物の位置、姿勢をstateクラスに格納
 Estimator = Estimator_EKF(agent(1),dt,MODEL_CLASS(agent(1),Model_Suspended_Load(dt, initial_state, 1,agent(1),1)), ["p", "q", "pL", "pT"]);
-	Estimator.sensor_func = @EKF_muliti
+Estimator.sensor_func = @EKF_multi;
 function state = EKF_multi(self,param) 
 r =self.sensor.result.rigid;
 d = r(2).p - r(1).p;
-state = [r(1).p;r(1).q; r(2).p; d/norm(d)];
+state = [r(1).p;Quat2Eul(r(1).q); r(2).p; d/norm(d)];
 end
 agent(1).estimator.ekf = EKF(agent(1), Estimator );%expの流用
 agent(1).estimator.result = agent(1).estimator.ekf.do(time,'a',logger,[],agent,1);
@@ -68,9 +68,12 @@ agent(1).controller = HLC_SUSPENDED_LOAD(agent(1),Controller_HL_Suspended_Load(d
 agent(1).controller.result.input = [(agent(1).parameter.loadmass*0+agent(1).parameter.mass)*agent(1).parameter.gravity;0;0;0];
 run("ExpBase");
 agent(1).cha_allocation.sensor = "motive";
-agent(2).cha_allocation.sensor = "motive";
 agent(1).cha_allocation.estimator = ["forload","ekf"];
 agent(1).cha_allocation.reference = "timevarying";
+agent(2).cha_allocation.sensor = "motive";
+agent(2).cha_allocation.l = [];
+agent(2).cha_allocation.t = [];
+
 %%
 % clc
 % for i = 1:time.te
