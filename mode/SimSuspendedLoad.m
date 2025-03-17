@@ -36,7 +36,6 @@ load_setting.num_list = [3,3];
 load_setting.initial = initial_load;
 Model.param = load_setting;
 agent(2).plant = MODEL_CLASS(agent(2),Model);
-agent(2).plant.stop = [];
 agent(2).estimator.do = @(obj, varargin)[];
 agent(2).reference.do = @(obj, varargin)[];
 agent(2).controller.do = @load_controller;

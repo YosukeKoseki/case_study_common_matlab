@@ -1,5 +1,5 @@
 function do_calculation(app)
-profile on
+% profile on
 for i = 1:app.N
   app.do_prop(app.agent(i),"sensor",i);
   app.do_prop(app.agent(i),"estimator",i);
@@ -10,5 +10,5 @@ for i = 1:app.N
 end
 app.logger.logging(app.time, app.cha, app.agent,[]);
 app.time.k = app.logger.k;
-profile viewer
+% profile viewer
 end
