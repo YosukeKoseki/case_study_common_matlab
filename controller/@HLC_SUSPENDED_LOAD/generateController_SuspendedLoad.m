@@ -97,15 +97,11 @@ d5h3 = LieD(d4h3,f1,x)+diff(d4h3,t);
   	simplify([LieD(d3h2,g1,x),LieD(d3h3,g1,x)])
  	simplify([LieD(d4h2,g1,x),LieD(d4h3,g1,x)])
  	% simplify([LieD(d5h2,g1,x),LieD(d5h3,g1,x)])
-%%
-a2_1=simplify(LieD(d5h2,f1,x)+diff(d5h2,t));
-%%
-a2_2 = simplify(LieD(d5h3,f1,x)+diff(d5h3,t));
-%%
-a2_3 = simplify(LieD(dh4,f1,x)+diff(dh4,t));
-%%
-matlabFunction(subs(a2_1,[xdReff vInput1f], [XDf V1vf]),"file",'test1.m','Vars',{obj x cell2sym(XD) cell2sym(V1v) [V2;V3;V4] physicalParam},'outputs',{'v2_alpha2'})
-matlabFunction(subs(LieD(d5h2,f1,x)+diff(d5h2,t),[xdReff vInput1f], [XDf V1vf]),"file",'test2.m','Vars',{obj x cell2sym(XD) cell2sym(V1v) [V2;V3;V4] physicalParam},'outputs',{'v2_alpha2'})
+%% trial
+% simplify してからmatlabFunctionは意味がない（というか遅くなった）
+% a2_1=simplify(LieD(d5h2,f1,x)+diff(d5h2,t));
+% matlabFunction(subs(a2_1,[xdReff vInput1f], [XDf V1vf]),"file",'test1.m','Vars',{obj x cell2sym(XD) cell2sym(V1v) [V2;V3;V4] physicalParam},'outputs',{'v2_alpha2'})
+% matlabFunction(subs(LieD(d5h2,f1,x)+diff(d5h2,t),[xdReff vInput1f], [XDf V1vf]),"file",'test2.m','Vars',{obj x cell2sym(XD) cell2sym(V1v) [V2;V3;V4] physicalParam},'outputs',{'v2_alpha2'})
 %%
 % 2+6+6+2
 % % Derive 2nd layer controller
