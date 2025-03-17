@@ -1,10 +1,10 @@
-function Model = Model_Suspended_Load(dt,initial,id,agent,isEstLoadMass)
+function Model = Model_Suspended_Load(dt,initial,id,agent,modelName)
 arguments
   dt
   initial
   id
   agent = ""
-  isEstLoadMass = 0 %牽引物質量を推定するか
+  modelName = [] %牽引物質量を推定するか
 end         
 Model.id                = id;                                       %牽引物番号
 Model.name              = "load"; % print name          
@@ -15,7 +15,6 @@ Setting.dim             = [24,4,21];                                %それぞ�
 Setting.num_list        = [3,3,3,3,3,3,3,3];                        % 状態のベクトルの次元(それぞれ3次元)
 Setting.state_list      = ["p","q","v","w","pL","vL","pT","wL"];    % 状態の種類
 Setting.initial         = initial;                                  %状態の初期値
-% 紐の方向ベクトルの初期値が定義されていない場合
 if ~isfield(Setting.initial,"p")
     Setting.initial.p   = Setting.initial.pL - agent.parameter.cableL*Setting.initial.pT;
     Setting.initial.v   = [0; 0; 0];
@@ -26,8 +25,8 @@ Setting.dt              = dt;                                       % 刻み時�
 Setting.param           = agent.parameter.get;                      % モデルの物理パラメータ設定
 
 % EKFで使うモデルがplantと異なる場合の設定isEstLoadMassの値とmodelnameによって変更
-if ~isempty(agent.plant) && isEstLoadMass
-      modelName = "Load_mL_HL";
+if ~isempty(modelName) 
+      % modelName = "Load_mL_HL";
       % modelName = "Load_mL_cableL_HL";
       % modelName = "Load_mL_fdst_HL";
       % modelName = "Load_mL_dstxy_HL";

@@ -167,7 +167,7 @@ classdef SimExp < matlab.apps.AppBase
       % Create UIFigure and hide until all components are created
       app.UIFigure = uifigure('Visible', 'off');
       app.UIFigure.AutoResizeChildren = 'off';
-      app.UIFigure.Position = [94 94 1100 494];
+      app.UIFigure.Position = [94 294 1100 494];
       app.UIFigure.Name = 'MATLAB App';
 
       % Create GridLayout

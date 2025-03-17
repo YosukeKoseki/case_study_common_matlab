@@ -55,8 +55,7 @@ agent(1).sensor.motive = MOTIVE(agent(1), Sensor_Motive(2,0, motive));%荷物の
 % agent(1).sensor.motive.do(time,'a',logger,[],agent,1);
 
 % drone setting
-%agent(2).estimator.forload = FOR_LOAD(agent(2), Estimator_Suspended_Load(1));%[1,1+N]%for_loadで機体と牽引物の位置、姿勢をstateクラスに格納
-Estimator = Estimator_EKF(agent(2),dt,MODEL_CLASS(agent(2),Model_Suspended_Load(dt, initial_state, 2,agent(2),1)), ["p", "q", "pL", "pT"]);
+Estimator = Estimator_EKF(agent(2),dt,MODEL_CLASS(agent(2),Model_Suspended_Load(dt, initial_state, 2,agent(2),"Load_mL_HL")), ["p", "q", "pL", "pT"]);
 Estimator.sensor_func = @EKF_sensor_multi_rigid;
 function state = EKF_sensor_multi_rigid(self,~) 
 r =self.sensor.result.rigid; % motive情報
