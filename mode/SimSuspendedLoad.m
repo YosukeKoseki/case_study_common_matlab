@@ -7,7 +7,7 @@ time = TIME(ts,dt,te);
 in_prog_func = @(app) in_prog(app);
 post_func = @(app) post(app);
 logger = LOGGER(2, size(ts:dt:te, 2), 0, [],[]);
-motive = Connector_Natnet_sim(2, dt, 0); % imitation of Motive camera (motion capture system)
+% motive = Connector_Natnet_sim(2, dt, 0); % imitation of Motive camera (motion capture system)
 
 % drone plant setting
 
@@ -42,7 +42,7 @@ Model.param = load_setting;
 agent(1).plant = MODEL_CLASS(agent(1),Model); % motiveがplantのp, qを取ってくるため plantを設定
 
 % getDataするためにはplantを先に設定しておく必要がある
-motive.getData(agent);
+% motive.getData(agent);
 
 % Load setting
 agent(1).estimator.do = @(obj, varargin)[];% dummy%@(varargin)struct('state',varargin{5}(1).plant.state);% dummy
@@ -52,22 +52,24 @@ function result = load_controller(~,~,~,~,agent,~)
     agent(1).plant.set_state("p",agent(2).plant.state.pL); % 統合モデルのpL を pとして設定
     result.input = agent(1).plant.state; % p = pL となるように設定
 end
-agent(1).sensor.motive = MOTIVE(agent(1), Sensor_Motive(2,0, motive));%荷物のも取ってこれるはず
+% agent(1).sensor.motive = MOTIVE(agent(1), Sensor_Motive(2,0, motive));%荷物のも取ってこれるはず
 % agent(1).sensor.motive.do(time,'a',logger,[],agent,1);
+agent(1).sensor = DIRECT_SENSOR(agent(1), 0.002*0);%motiveとforloadに書き換えると実験と同じ条件でできる
 
 % drone setting
 Estimator = Estimator_EKF(agent(2),dt,MODEL_CLASS(agent(2),Model_Suspended_Load(dt, initial_state, 2,agent(2),"Load_mL_HL")), ["p", "q", "pL", "pT"]);
 Estimator.sensor_func = @EKF_sensor_multi_rigid;
 function state = EKF_sensor_multi_rigid(self,~) 
-r =self.sensor.result.rigid; % motive情報
-d = r(1).p - r(2).p; % 機体から見たload位置
-state = [r(2).p;Quat2Eul(r(2).q); r(1).p; d/norm(d)]; % p, q, pL, pT
+r =self.sensor.result.state;%rigid; % motive情報
+% d = r(1).p - r(2).p; % 機体から見たload位置
+% state = [r(2).p;Quat2Eul(r(2).q); r(1).p; d/norm(d)]; % p, q, pL, pT
+state = [r.p; r.q; r.pL; r.pT];
 end
 agent(2).estimator.ekf = EKF(agent(2), Estimator );%expの流用
 % agent(2).estimator.result = agent(2).estimator.ekf.do(time,'a',logger,[],agent,2);
 % agent(2).parameter.set("loadmass",0.3);
-% agent(2).sensor = DIRECT_SENSOR(agent(1), 0.002*0);%motiveとforloadに書き換えると実験と同じ条件でできる
-agent(2).sensor.motive = MOTIVE(agent(2), Sensor_Motive(1,0, motive));
+agent(2).sensor = DIRECT_SENSOR(agent(2), 0.002*0);%motiveとforloadに書き換えると実験と同じ条件でできる
+%agent(2).sensor.motive = MOTIVE(agent(2), Sensor_Motive(1,0, motive));
 % agent(2).sensor.motive.do(time,'a',logger,[],agent,2);
 
 
@@ -75,10 +77,10 @@ agent(2).reference.timevarying = TIME_VARYING_REFERENCE(agent(2),{"gen_ref_saddl
 agent(2).controller = HLC_SUSPENDED_LOAD(agent(2),Controller_HL_Suspended_Load(dt,agent(2)));
 % agent(2).controller.result.input = [(agent(2).parameter.loadmass*0+agent(2).parameter.mass)*agent(2).parameter.gravity;0;0;0];
 run("ExpBase");
-agent(2).cha_allocation.sensor = "motive";
+% agent(2).cha_allocation.sensor = "motive";
 agent(2).cha_allocation.estimator = "ekf";
 agent(2).cha_allocation.reference = "timevarying";
-agent(1).cha_allocation.sensor = "motive";
+% agent(1).cha_allocation.sensor = "motive";
 agent(1).cha_allocation.l = [];
 agent(1).cha_allocation.t = [];
 
@@ -103,8 +105,8 @@ agent(1).cha_allocation.t = [];
 
 function post(app)
 app.logger.plot({1, "controller.result.xd1:3", ""},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
-app.logger.plot({1, "controller.result.x8:10", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
-% app.logger.plot({1, "estimator.result.state.mL", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
+% app.logger.plot({1, "controller.result.x8:10", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
+app.logger.plot({1, "estimator.result.state.mL", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
 app.logger.plot({1, "p", "pre"},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
 app.logger.plot({1, "input", ""},"ax",app.UIAxes4,"xrange",[app.time.ts,app.time.te]);
 %app.logger.plot({1, "input", ""},"ax",app.UIAxes4,"xrange",[app.time.ts,app.time.te]);

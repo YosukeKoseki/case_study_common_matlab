@@ -155,14 +155,14 @@ classdef HLC_SUSPENDED_LOAD < handle
                     pL  = p + (1 - k)*(pL - p); % 牽引物位置と機体位置の差に反映割合をかけてセンサ値を反映
                     nxy = nxy + k*obj.baseP;
                     obj.mLL = (1 - k)*obj.mLL;
-                    P(6) = min(mL, obj.mLL);  % 傾いて着陸した時に推定が吹っ飛ばないように制限
+                    mL = min(mL, obj.mLL);  % 傾いて着陸した時に推定が吹っ飛ばないように制限
                 end
 
             end
             %l = sqrt(L^2 - sum((p(1:2)-pL(1:2)).^2));
+            P(6) = mL;
             if strcmp(cha,'f') % 
                 P = obj.P;
-                % P(6) = mL;
                 pL = model.state.pL;
                 pT = model.state.pT;
             else
