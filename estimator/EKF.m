@@ -76,7 +76,9 @@ classdef EKF < handle
             A = eye(obj.n)+obj.JacobianF(x,p)*dt; % Euler approximation
             C = obj.JacobianH(x,p);
             P_pre  = A*obj.result.P*A' + obj.B*obj.Q*obj.B';       % Predicted covariance
-            G = (P_pre*C')/(C*P_pre*C'+obj.R); % Kalman gain
+            % if abs(det(C*P_pre*C'+obj.R)) > 1e-10
+              G = (P_pre*C')/(C*P_pre*C'+obj.R); % Kalman gain
+            % end
             P = (eye(obj.n)-G*C)*P_pre;	% Update covariance
             tmpvalue = xh_pre + G*(y-yh);	% Update state estimate
             tmpvalue = obj.model.projection(tmpvalue);

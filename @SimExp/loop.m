@@ -7,8 +7,8 @@ end
   app.TimeSliderLabel.Text = string(round(app.time.t, 1));%["..."];
   if app.isReady
     uiwait(app.UIFigure);
+    app.t0 = app.time.ts;
     start(app.update_timer);
-    app.t0 = app.time.t;
   end
   while app.fStart 
     tStart = tic;

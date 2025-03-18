@@ -17,6 +17,6 @@ app.set_mode();
 app.time.t = app.time.ts;
 app.time.k = 1;
 app.isReady = false;
-app.StartButton.Text = "Stop";
+app.StartButton.Text = "Start";
 app.LampLabel.Text = ""; % clear emergency text
 end

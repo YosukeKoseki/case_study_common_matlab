@@ -183,7 +183,7 @@ classdef SimExp < matlab.apps.AppBase
             % Create LampLabel
             app.LampLabel = uilabel(app.LeftPanel);
             app.LampLabel.HorizontalAlignment = 'right';
-            app.LampLabel.Position = [37 393 104 28];
+            app.LampLabel.Position = [37 393 183 28];
             app.LampLabel.Text = 'Lamp';
 
             % Create DrawgraphButton

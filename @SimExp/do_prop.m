@@ -2,10 +2,8 @@ function do_prop(app,agent,prop,i)
 if ~app.isReady && strcmp(prop,"plant")
     return
 else
-    if isempty(app.cha) || ~contains("ftla", app.cha)
-        app.cha = [];
-    end
-    if isempty(app.cha)
+    if ~contains("ftla", app.cha)
+        app.cha = "s";
         return
     else
         list=agent.cha_allocation.(app.cha).(prop);
