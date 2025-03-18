@@ -101,9 +101,9 @@ agent(1).cha_allocation.t = [];
 %%
 
 function post(app)
-app.logger.plot({1, "p", "er"},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
+app.logger.plot({1, "p", "pes"},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
 app.logger.plot({1, "plant.result.state.pL", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
-app.logger.plot({1, "v", "e"},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
+app.logger.plot({1, "controller.result.", "e"},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
 app.logger.plot({1, "input", ""},"ax",app.UIAxes4,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "input", ""},"ax",app.UIAxes5,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "inner_input", ""},"ax",app.UIAxes6,"xrange",[app.time.ts,app.time.te]);

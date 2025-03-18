@@ -56,10 +56,6 @@ classdef HLC_SUSPENDED_LOAD < handle
                 obj.baseP = model.state.p - model.state.pL;
             end
 
-            [pL,pT,P,dxdxy]= obj.calc_pL(t,model,cha);
-
-            x = [model.state.getq('compact');model.state.w;pL;model.state.vL;pT;model.state.wL]; % [q, w ,pL, vL, pT, wL]に並べ替え
-
             % 目標値を取得
             if isprop(ref.state,'xd')
                 xd = ref.state.xd; % 20次元の目標値に対応する用
@@ -67,7 +63,9 @@ classdef HLC_SUSPENDED_LOAD < handle
                 xd = ref.state.get();
             end
 
-            xd(1:2) = xd(1:2) + dxdxy; % landing 時に目標位置をずらす
+            [pL,pT,P,xd]= obj.calc_pL(t,model,cha,xd);
+
+            x = [model.state.getq('compact');model.state.w;pL;model.state.vL;pT;model.state.wL]; % [q, w ,pL, vL, pT, wL]に並べ替え
 
             % yaw角の定義域の問題を回避,h4 = yaw - yawd(誤差)だがyawd = -(誤差)+yawの値を入れる．x,y,yawの仮想入力はVs_SuspendedLoadはクオータニオンで計算するため
             % yawサブシステムの入力を設計するときにyaw角を打ち消して定義域修正した誤差を反映
@@ -102,7 +100,8 @@ classdef HLC_SUSPENDED_LOAD < handle
             % 安全のため入力値に制限を付ける．推定した牽引物質量や紐の長さ，外乱などを表示．
             %disp("time: "+ num2str(t,2)+" z position of drone: "+num2str(model.state.p(3),3)+" estimated load mass: "+num2str(P(6),4)+" dst:(x,y) "+num2str(P(end-1:end),4))
             obj.result.input = [max(0,min(20,tmp(1)));max(-1,min(1,tmp(2)));max(-1,min(1,tmp(3)));max(-1,min(1,tmp(4)))];%+[normrnd(0,0.01,1);normrnd(0,0.001,[3,1])]*1;%入力にノイズを付与可能
-
+            obj.result.xd = xd;
+            obj.result.x = x;
             result = obj.result;
         end
         function show(obj)
@@ -110,7 +109,7 @@ classdef HLC_SUSPENDED_LOAD < handle
         end
 
 
-        function [pL,pT,P,dxdxy] = calc_pL(obj,t,model,cha)
+        function [pL,pT,P,xd] = calc_pL(obj,t,model,cha,xd)
             P = obj.P;
             p = model.state.p;
             pL = model.state.pL;
@@ -120,7 +119,7 @@ classdef HLC_SUSPENDED_LOAD < handle
             else
                 mL = P(6);
             end
-            dxdxy = [0;0]; %
+            nxy = xd(1:3); %
             if isempty(obj.pL0)
                 obj.pL0 = pL; % 初期の牽引物位置
             end
@@ -140,6 +139,7 @@ classdef HLC_SUSPENDED_LOAD < handle
                 else %閾値を越えなかったら機体の真下に牽引物がいることにする
                     pL = p;
                 end
+                nxy = pL;
             elseif strcmp(cha,'l') % landing
                 if isempty(obj.cableLL) || isempty(obj.mLL)
                     obj.cableLL = norm(p - pL);  % landing開始時の機体と牽引物の距離
@@ -157,7 +157,7 @@ classdef HLC_SUSPENDED_LOAD < handle
                 tt  = min(t - obj.tt0, obj.td);  % landingの経過時間がセンサ値使用率0%になる時間を越えないようにする
                 k  = obj.ratet*tt^2;  % センサ値反映割合
                 pL  = p + (1 - k)*(pL - p); % 牽引物位置と機体位置の差に反映割合をかけてセンサ値を反映
-                dxdxy = k*obj.baseP(1:2);
+                nxy = [nxy(1:2) + k*obj.baseP(1:2);pL(3)];
             end
             %l = sqrt(L^2 - sum((p(1:2)-pL(1:2)).^2));
             l = L;
@@ -167,6 +167,7 @@ classdef HLC_SUSPENDED_LOAD < handle
             if isprop(model.state,"dst") && strcmp(cha,'f')
                 P(end-1:end)  = model.state.dst';
             end
+            xd(1:3) = nxy;
         end
     end
 end
