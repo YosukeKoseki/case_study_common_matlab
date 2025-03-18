@@ -150,15 +150,14 @@ classdef HLC_SUSPENDED_LOAD < handle
                 %地面についたかの判定
                 if p(3) - pL(3) < obj.cableLL*0.9 || obj.isGround == 1
                     obj.isGround  = 1;  % この分岐に一回でも入ったら入り続けるようにフラグ立てる
-                    P(6)  = 0;  % 地面についたら質量は0とする
-                else % 地面についた判定ではないとき
+                    tt  = min(t - obj.tt0, obj.td);  % landingの経過時間がセンサ値使用率0%になる時間を越えないようにする
+                    k  = obj.ratet*tt^2;  % センサ値反映割合
+                    pL  = p + (1 - k)*(pL - p); % 牽引物位置と機体位置の差に反映割合をかけてセンサ値を反映
+                    nxy = nxy + k*obj.baseP;
+                    obj.mLL = (1 - k)*obj.mLL;
                     P(6) = min(mL, obj.mLL);  % 傾いて着陸した時に推定が吹っ飛ばないように制限
                 end
 
-                tt  = min(t - obj.tt0, obj.td);  % landingの経過時間がセンサ値使用率0%になる時間を越えないようにする
-                k  = obj.ratet*tt^2;  % センサ値反映割合
-                pL  = p + (1 - k)*(pL - p); % 牽引物位置と機体位置の差に反映割合をかけてセンサ値を反映
-                nxy = nxy + k*obj.baseP;
             end
             %l = sqrt(L^2 - sum((p(1:2)-pL(1:2)).^2));
             if strcmp(cha,'f') % 
