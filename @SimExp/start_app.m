@@ -20,7 +20,7 @@ else % to start
         end
         app.isReady = true;
         app.fStart = 1;
-        app.LampLabel.Text = "Ready! Press 'a' to start";
+        app.LampLabel.Text = "Ready! Press 'a' to start";          
     end
     app.StartButton.Text = "Stop";
     app.Lamp.Color = [0 1 0];

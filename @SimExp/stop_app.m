@@ -1,7 +1,12 @@
-function stop_app(app)
+function stop_app(app,STR)
+arguments
+  app
+  STR = ""
+end
+% Normal finish
 app.fStart = 0;
 app.isReady = false;
-app.StartButton.Text = "Start";
+app.StartButton.Text = "Start: " + app.cha + " " + STR;
 app.Lamp.Color = [0 0 0];
 app.LampLabel.Text = "Program Stop";
 app.cha = "s";

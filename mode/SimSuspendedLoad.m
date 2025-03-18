@@ -11,15 +11,16 @@ motive = Connector_Natnet_sim(2, dt, 0); % imitation of Motive camera (motion ca
 
 % drone plant setting
 
+
+agent(2) = DRONE;
+agent(2).parameter = DRONE_PARAM_SUSPENDED_LOAD("DIATONE");
+%agent(2).parameter.set("loadmass", 0.1)
 initial_state.q  = [0; 0; 0];
 initial_state.w  = [0; 0; 0];
 initial_state.pL = [0; 0; 0];
 initial_state.vL = [0; 0; 0];
 initial_state.pT = [0; 0; -1];
 initial_state.wL = [0; 0; 0];
-agent(2) = DRONE;
-agent(2).parameter = DRONE_PARAM_SUSPENDED_LOAD("DIATONE");
-%agent(2).parameter.set("loadmass", 0.1)
 agent(2).plant = MODEL_CLASS(agent(2),Model_Suspended_Load(dt, initial_state,2,agent(2)));%id,dt,type,initial,varargin
 
 
@@ -101,10 +102,10 @@ agent(1).cha_allocation.t = [];
 %%
 
 function post(app)
-app.logger.plot({1, "p", "pes"},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
+app.logger.plot({1, "controller.result.xd1:3", ""},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
 app.logger.plot({1, "plant.result.state.pL", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
-app.logger.plot({1, "controller.result.", "e"},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
-app.logger.plot({1, "input", ""},"ax",app.UIAxes4,"xrange",[app.time.ts,app.time.te]);
+app.logger.plot({1, "p", "pr"},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
+%app.logger.plot({1, "input", ""},"ax",app.UIAxes4,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "input", ""},"ax",app.UIAxes5,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "inner_input", ""},"ax",app.UIAxes6,"xrange",[app.time.ts,app.time.te]);
 end

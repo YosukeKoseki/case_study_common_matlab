@@ -1,4 +1,5 @@
 function reset_app(app)
+% Reset for next trial
 app.stop_app();
 Setting = app.initial_setting;
 run(Setting.mode);
@@ -17,6 +18,6 @@ app.set_mode();
 app.time.t = app.time.ts;
 app.time.k = 1;
 app.isReady = false;
-app.StartButton.Text = "Start";
+% app.StartButton.Text = "Start";
 app.LampLabel.Text = ""; % clear emergency text
 end

@@ -47,7 +47,7 @@ end
         app.time.dt = toc(tStart);
     end
     app.time.t = app.time.t + app.time.dt;   
-    if ~app.isReady
+    if ~app.isReady || app.time.t >= app.time.te
       break
     end
   end

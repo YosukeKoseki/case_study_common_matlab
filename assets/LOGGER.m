@@ -391,9 +391,9 @@ classdef LOGGER < handle % handleクラスにしないとmethodの中で値を�
       for j = 1:length(variable)
         fn = fieldnames(data); % フィールド名に数字を含む場合のケア
         %data = [data.(variable(j))];
-        data = vertcat(data.(fn{contains(fn,variable(j))}));
 
         if strcmp(variable(j), 'state')
+          data = vertcat(data.(fn{strcmp(fn,variable(j))}));
 
           for k = 1:length(data)
             %ndata(k, :, :) = data(k).(variable(j + 1))(1:data(k).num_list(strcmp(data(k).list, variable(j + 1))), :);
@@ -402,6 +402,11 @@ classdef LOGGER < handle % handleクラスにしないとmethodの中で値を�
 
           data = ndata;
           break % WRN : stateから更に深い構造には対応していない
+        else
+          for k = 1:length(data)
+            ndata(k, :, :) = data(k).(fn{strcmp(fn,variable(j))});
+          end
+          data = ndata;
         end
 
       end

@@ -157,11 +157,12 @@ classdef HLC_SUSPENDED_LOAD < handle
                 tt  = min(t - obj.tt0, obj.td);  % landingの経過時間がセンサ値使用率0%になる時間を越えないようにする
                 k  = obj.ratet*tt^2;  % センサ値反映割合
                 pL  = p + (1 - k)*(pL - p); % 牽引物位置と機体位置の差に反映割合をかけてセンサ値を反映
-                nxy = [nxy(1:2) + k*obj.baseP(1:2);pL(3)];
+                nxy = nxy + k*obj.baseP;
             end
             %l = sqrt(L^2 - sum((p(1:2)-pL(1:2)).^2));
             l = L;
             pL(3) = p(3) - l;
+            nxy(3) = xd(3) - l;
             ttt = pL - p;
             pT = ttt/norm(ttt);
             if isprop(model.state,"dst") && strcmp(cha,'f')

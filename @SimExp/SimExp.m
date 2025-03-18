@@ -54,8 +54,8 @@ classdef SimExp < matlab.apps.AppBase
         logger
         env = [];
         time
-        cha = "";
-        cha0 = "";
+        cha = "s";
+        cha0 = "s";
         agent = [];
         motive = [];
         initial_setting = [];
