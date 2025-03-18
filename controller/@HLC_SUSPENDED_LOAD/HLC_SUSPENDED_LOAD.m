@@ -100,7 +100,7 @@ classdef HLC_SUSPENDED_LOAD < handle
             obj.result.tmp = tmp; % 入力に制限を付けてない値を格納
 
             % 安全のため入力値に制限を付ける．推定した牽引物質量や紐の長さ，外乱などを表示．
-            disp("time: "+ num2str(t,2)+" z position of drone: "+num2str(model.state.p(3),3)+" estimated load mass: "+num2str(P(6),4)+" dst:(x,y) "+num2str(P(end-1:end),4))
+            %disp("time: "+ num2str(t,2)+" z position of drone: "+num2str(model.state.p(3),3)+" estimated load mass: "+num2str(P(6),4)+" dst:(x,y) "+num2str(P(end-1:end),4))
             obj.result.input = [max(0,min(20,tmp(1)));max(-1,min(1,tmp(2)));max(-1,min(1,tmp(3)));max(-1,min(1,tmp(4)))];%+[normrnd(0,0.01,1);normrnd(0,0.001,[3,1])]*1;%入力にノイズを付与可能
 
             result = obj.result;
@@ -147,7 +147,7 @@ classdef HLC_SUSPENDED_LOAD < handle
                     obj.tt0 = t;
                 end
                 %地面についたかの判定
-                if p(3) - pL(3) < obj.cableLL(3)*0.9 || obj.isGround == 1
+                if p(3) - pL(3) < obj.cableLL*0.9 || obj.isGround == 1
                     obj.isGround  = 1;  % この分岐に一回でも入ったら入り続けるようにフラグ立てる
                     P(6)  = 0;  % 地面についたら質量は0とする
                 else % 地面についた判定ではないとき
@@ -159,7 +159,8 @@ classdef HLC_SUSPENDED_LOAD < handle
                 pL  = p + (1 - k)*(pL - p); % 牽引物位置と機体位置の差に反映割合をかけてセンサ値を反映
                 dxdxy = k*obj.baseP(1:2);
             end
-            l = sqrt(L^2 - sum((p(1:2)-pL(1:2)).^2));
+            %l = sqrt(L^2 - sum((p(1:2)-pL(1:2)).^2));
+            l = L;
             pL(3) = p(3) - l;
             ttt = pL - p;
             pT = ttt/norm(ttt);

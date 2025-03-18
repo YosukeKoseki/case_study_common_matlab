@@ -1,8 +1,9 @@
-function stop(app)
+function stop_app(app)
 app.fStart = 0;
-app.StartButton.Text = "Start";
+app.isReady = false;
+%app.StartButton.Text = "Start";
 app.Lamp.Color = [0 0 0];
-app.LampLabel.Text = "Program Stop";
+%app.LampLabel.Text = "Program Stop";
 app.cha = "";
 app.cha0 = "";
 if ~isempty(app.update_timer)

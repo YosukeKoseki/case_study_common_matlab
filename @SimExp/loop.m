@@ -5,15 +5,18 @@ if app.fExp % experiment
   app.LampLabel.Text = ["== EXPERIMENT ==","Start! Press key code" + app.cha,"s : stop", "a : arming", "t : take-off", "f : fligh", "l : landing"];
 end
   app.TimeSliderLabel.Text = string(round(app.time.t, 1));%["..."];
-  uiwait(app.UIFigure)
-  start(app.update_timer);
-  while app.fStart
+  if app.isReady
+    uiwait(app.UIFigure);
+    start(app.update_timer);
+    app.t0 = app.time.t;
+  end
+  while app.fStart 
     tStart = tic;
     drawnow
     if app.cha0 ~= app.cha % exec once per another key press
       switch app.cha
         case {'q',' '}
-          app.StopProp;
+          app.StopProp;          
           app.LampLabel.Text = "Quit the trial";
           app.Lamp.Color = [0 0 0];
           break;
@@ -44,6 +47,9 @@ end
         app.time.dt = toc(tStart);
     end
     app.time.t = app.time.t + app.time.dt;   
+    if ~app.isReady
+      break
+    end
   end
-app.stop;
+app.stop_app;
 end

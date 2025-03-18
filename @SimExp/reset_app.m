@@ -1,17 +1,5 @@
 function reset_app(app)
-% app.data_file_name = [];
-% app.takeoff_ref = [];
-% app.landing_ref = [];
-% app.logger = [];
-% app.env = [];
-% app.time.t = app.time.ts;
-% app.cha = "";
-% app.cha0 = "";
-% app.agent = [];
-% app.motive = [];
-% app.update_timer = [];
-% app.N = 1;
-app.stop
+app.stop_app();
 Setting = app.initial_setting;
 run(Setting.mode);
 Setting.agent = agent;
@@ -28,5 +16,7 @@ app.initial_setting = Setting;
 app.set_mode();
 app.time.t = app.time.ts;
 app.time.k = 1;
-
+app.isReady = false;
+app.StartButton.Text = "Stop";
+app.LampLabel.Text = ""; % clear emergency text
 end
