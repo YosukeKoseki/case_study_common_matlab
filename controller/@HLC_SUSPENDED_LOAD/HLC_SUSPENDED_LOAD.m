@@ -113,6 +113,7 @@ classdef HLC_SUSPENDED_LOAD < handle
             P = obj.P;
             p = model.state.p;
             pL = model.state.pL;
+            pT = model.state.pT; 
             L = obj.self.parameter.get("cableL");
             if isprop(model.state,"mL")
                 mL = max(0,model.state.mL); % load mass
@@ -160,15 +161,22 @@ classdef HLC_SUSPENDED_LOAD < handle
                 nxy = nxy + k*obj.baseP;
             end
             %l = sqrt(L^2 - sum((p(1:2)-pL(1:2)).^2));
-            l = L;
-            pL(3) = p(3) - l;
-            nxy(3) = xd(3) - l;
-            ttt = pL - p;
-            pT = ttt/norm(ttt);
-            if isprop(model.state,"dst") && strcmp(cha,'f')
-                P(end-1:end)  = model.state.dst';
+            if strcmp(cha,'f') % 
+                P = obj.P;
+                % P(6) = mL;
+                pL = model.state.pL;
+                pT = model.state.pT;
+            else
+                l = L;
+                pL(3) = p(3) - l;
+                nxy(3) = xd(3) - l;
+                ttt = pL - p;
+                pT = ttt/norm(ttt);
+                if isprop(model.state,"dst") && strcmp(cha,'f')
+                    P(end-1:end)  = model.state.dst';
+                end
+                xd(1:3) = nxy;
             end
-            xd(1:3) = nxy;
         end
     end
 end
