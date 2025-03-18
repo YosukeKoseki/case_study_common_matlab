@@ -663,7 +663,7 @@ classdef LOGGER < handle % handleクラスにしないとmethodの中で値を�
       vrange = regexp(var, "[0-9:]", 'match');
 
       if ~isempty(vrange)
-        vrange = str2num(strjoin(vrange));
+        vrange = eval(strjoin(vrange,''));%str2num(strjoin(vrange));
       end
       % variable = var;
       % vrange = [];
