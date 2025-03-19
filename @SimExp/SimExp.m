@@ -21,7 +21,8 @@ classdef SimExp < matlab.apps.AppBase
         UIAxes3                       matlab.ui.control.UIAxes
         UIAxes2                       matlab.ui.control.UIAxes
         UIAxes                        matlab.ui.control.UIAxes
-        Label_2                       matlab.ui.control.Label
+        TextArea       matlab.ui.control.TextArea
+        TextAreaLabel  matlab.ui.control.Label
     end
 
     % Properties that correspond to apps with auto-reflow
@@ -77,6 +78,7 @@ classdef SimExp < matlab.apps.AppBase
             app.reset_app();
             % appearance
             app.LampLabel.HorizontalAlignment = 'left';
+            app.TextArea.Value = {char("Mode: " + Setting.mode)};
             %app.UIFigure.WindowState = 'maximized';
         end
 
@@ -201,13 +203,24 @@ classdef SimExp < matlab.apps.AppBase
             % Create FilenameoptionEditFieldLabel
             app.FilenameoptionEditFieldLabel = uilabel(app.LeftPanel);
             app.FilenameoptionEditFieldLabel.HorizontalAlignment = 'right';
-            app.FilenameoptionEditFieldLabel.Position = [7 282 102 22];
+            app.FilenameoptionEditFieldLabel.Position = [7 280 102 22];
             app.FilenameoptionEditFieldLabel.Text = 'File name (option)';
 
             % Create FilenameoptionEditField
             app.FilenameoptionEditField = uieditfield(app.LeftPanel, 'text');
             app.FilenameoptionEditField.ValueChangedFcn = createCallbackFcn(app, @set_file_name, true);
-            app.FilenameoptionEditField.Position = [7 253 183 22];
+            app.FilenameoptionEditField.Position = [7 258 193 22];
+
+            % Create TextAreaLabel
+            app.TextAreaLabel = uilabel(app.LeftPanel);
+            app.TextAreaLabel.HorizontalAlignment = 'right';
+            app.TextAreaLabel.Position = [7 230 55 22];
+            app.TextAreaLabel.Text = 'Static Info';
+
+            % Create TextArea
+            app.TextArea = uitextarea(app.LeftPanel);
+            app.TextArea.Position = [7 150 193 80];
+
 
             % Create RightPanel
             app.RightPanel = uipanel(app.GridLayout);
@@ -257,10 +270,6 @@ classdef SimExp < matlab.apps.AppBase
             app.TimeSlider.ValueChangingFcn = createCallbackFcn(app, @set_current_time, true);
             app.TimeSlider.Position = [59 474 284 3];
 
-            % Create Label_2
-            app.Label_2 = uilabel(app.UIFigure);
-            app.Label_2.Position = [53 412 432 43];
-            app.Label_2.Text = '';
 
             % Show the figure after all components are created
             app.UIFigure.Visible = 'on';

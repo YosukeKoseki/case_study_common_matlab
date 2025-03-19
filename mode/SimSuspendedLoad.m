@@ -7,7 +7,6 @@ time = TIME(ts,dt,te);
 in_prog_func = @(app) in_prog(app);
 post_func = @(app) post(app);
 logger = LOGGER(1, size(ts:dt:te, 2), 0, [],[]); % target, number, fExp, items, agent_items, option
-motive = Connector_Natnet_sim(2, dt, 0); % imitation of Motive camera (motion capture system)
 
 % drone plant setting
 agent(1) = DRONE;
@@ -47,6 +46,7 @@ Model.param = load_setting;
 agent(2).plant = MODEL_CLASS(agent(2),Model); % motiveがplantのp, qを取ってくるため plantを設定
 
 % getDataするためにはplantを先に設定しておく必要がある
+motive = Connector_Natnet_sim(2, dt, "state_name",{["p","q"],["pL","pT"]}); % imitation of Motive camera (motion capture system)
 motive.getData(agent);
 
 agent(2).estimator.do = @(obj, varargin)[];% dummy%@(varargin)struct('state',varargin{5}(1).plant.state);% dummy
@@ -58,8 +58,7 @@ function result = load_controller(~,~,~,~,agent,~)
     q = agent(2).plant.state.q;
     pL = agent(2).plant.state.pL;
     pT = agent(2).plant.state.pT;
-           % agent(2).plant.set_state("p",agent(1).plant.state.p,... % １時刻前の状態を使ったセンサー値を試す場合はこちら
-        agent(2).plant.set_state("p",agent(1).plant.state.pL,... % motive環境を模擬する場合はこちら
+    agent(2).plant.set_state("p",agent(1).plant.state.p,... % １時刻前の状態を使ったセンサー値を試す場合はこちら    
         "q",agent(1).plant.state.q,...
         "pL",agent(1).plant.state.pL,...
         "pT",agent(1).plant.state.pT,...
@@ -68,7 +67,9 @@ function result = load_controller(~,~,~,~,agent,~)
 end
 agent(2).sensor.motive = MOTIVE(agent(2), Sensor_Motive(2,0, motive));
 
-% drone setting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% drone setting  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Estimator = Estimator_EKF(agent(1),dt,MODEL_CLASS(agent(1),Model_Suspended_Load(dt, initial_state, 1,agent(1),"Load_mL_HL")), ["p", "q", "pL", "pT"]);
 Estimator.sensor_func = @EKF_sensor_multi_rigid;
 function state = EKF_sensor_multi_rigid(self,varargin) 
@@ -78,14 +79,14 @@ function state = EKF_sensor_multi_rigid(self,varargin)
 % pL = r0.pL;
 % d = r0.pT;
 
-r0 = self.sensor.result.rigid; % motive情報
+% motive情報 模擬　この場合directを使う時と同じ結果になるはずだが...
+r0 = self.sensor.result.rigid; %：motive定義のstate_name = {["p","q"],["pL","q"]}
 p = r0(1).p;
 q = Quat2Eul(r0(1).q);
 d = r0(2).p - r0(1).p; % 機体から見たload位置
 pL = r0(2).p;
 
-
-% r0 = self.sensor.result.pstate; % 1時刻前の drone情報が入っている
+% r0 = self.sensor.result.pstate; % 1時刻前の drone情報が入っている ：motive定義のstate_name = {["p","q"],["p","q"]}
 % p = r0.p;
 % q = r0.q;
 % d = r0.pL - r0.p;
@@ -147,5 +148,5 @@ app.logger.plot({1, "p", "pre"},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.t
 % app.logger.plot({1, "inner_input", ""},"ax",app.UIAxes6,"xrange",[app.time.ts,app.time.te]);
 end
 function in_prog(app)
-app.Label_2.Text = ["estimator : " + app.agent(1).estimator.result.state.get()];
+app.TextArea.Text = ["estimator : " + app.agent(1).estimator.result.state.get()];
 end

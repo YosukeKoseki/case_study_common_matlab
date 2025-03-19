@@ -29,8 +29,8 @@ else
     Estimator.JacobianH= matlabFunction(cell2mat(arrayfun(@(k) cell2mat(arrayfun(@(i,j) zeroone( col*tmp{k}',i,j),col,tmp{k},"UniformOutput",false)),1:length(output),"UniformOutput",false)'),"Vars",[dummy1,dummy2]);
 end
 
-Estimator.sensor_func = @(self,param) self.sensor.result.state.get(param); % function to get sensor value: sometimes some conversion will be done
 Estimator.sensor_param = ["p","q"]; % parameter for sensor_func
+Estimator.sensor_func = @(self,param) [self.sensor.result.state.get('p');self.sensor.result.state.getq('3')]; % function to get sensor value: sometimes some conversion will be done
 Estimator.output_func = @(state,param) param*state; % output function
 Estimator.output_param = Estimator.JacobianH(0,0); % parameter for output_func
 
