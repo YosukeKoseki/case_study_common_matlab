@@ -47,8 +47,8 @@ methods
             whn = obj.self.estimator.model.state.w; % predicted state
             obj.self.estimator.model.state.set_state(obj.self.estimator.result.state.get); % restore estimator.model
             if cha == 'f'
-                gain = obj.param.gain_f;
-                th_offset = obj.param.th_offset_f;
+                gain = obj.param.gain;
+                th_offset = obj.param.th_offset;
             else
                 gain = obj.param.gain_tl;
                 th_offset = obj.param.th_offset_tl;

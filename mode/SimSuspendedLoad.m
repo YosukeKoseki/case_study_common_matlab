@@ -73,18 +73,18 @@ agent(2).sensor.motive = MOTIVE(agent(2), Sensor_Motive(2,0, motive));
 Estimator = Estimator_EKF(agent(1),dt,MODEL_CLASS(agent(1),Model_Suspended_Load(dt, initial_state, 1,agent(1),"Load_mL_HL")), ["p", "q", "pL", "pT"]);
 Estimator.sensor_func = @EKF_sensor_multi_rigid;
 function state = EKF_sensor_multi_rigid(self,varargin) 
-% r0 =self.sensor.direct.result.state;% direct sensorをそのまま使う場合
-% p = r0.p;
-% q = r0.q;
-% pL = r0.pL;
-% d = r0.pT;
+r0 =self.sensor.direct.result.state;% direct sensorをそのまま使う場合
+p = r0.p;
+q = r0.q;
+pL = r0.pL;
+d = r0.pT;
 
 % motive情報 模擬　この場合directを使う時と同じ結果になるはずだが...
-r0 = self.sensor.result.rigid; %：motive定義のstate_name = {["p","q"],["pL","q"]}
-p = r0(1).p;
-q = Quat2Eul(r0(1).q);
-d = r0(2).p - r0(1).p; % 機体から見たload位置
-pL = r0(2).p;
+% r0 = self.sensor.result.rigid; %：motive定義のstate_name = {["p","q"],["pL","q"]}
+% p = r0(1).p;
+% q = Quat2Eul(r0(1).q);
+% d = r0(2).p - r0(1).p; % 機体から見たload位置
+% pL = r0(2).p;
 
 % r0 = self.sensor.result.pstate; % 1時刻前の drone情報が入っている ：motive定義のstate_name = {["p","q"],["p","q"]}
 % p = r0.p;
@@ -106,11 +106,17 @@ varargin{5}(1).sensor.direct.result.state.set_state(tmp);
 end
 
 agent(1).reference.timevarying = TIME_VARYING_REFERENCE(agent(1),{"gen_ref_saddle",{"freq",10,"orig",[0;0;1],"size",[2,2,0.5]},"HL"});
+dummy_state = state_copy(agent(1).reference.timevarying.result.state);
+agent(1).reference.dummy = struct("do",@(varargin) varargin{5}(1).reference.dummy.result, "result",struct("state",dummy_state));
+
 agent(1).controller = HLC_SUSPENDED_LOAD(agent(1),Controller_HL_Suspended_Load(dt,agent(1)));
 run("ExpBase");
 agent(1).cha_allocation.sensor = ["motive","direct"];
 agent(1).cha_allocation.estimator = "ekf";
-agent(1).cha_allocation.reference = "timevarying";
+% agent(1).cha_allocation.reference = "timevarying";
+agent(1).cha_allocation.f.reference = "timevarying";
+agent(1).cha_allocation.a.reference = "dummy";
+
 agent(2).cha_allocation.sensor = "motive";
 agent(2).cha_allocation.l = [];
 agent(2).cha_allocation.t = [];
@@ -137,8 +143,8 @@ agent(2).cha_allocation.t = [];
 function post(app)
 app.logger.plot({1, "controller.result.xd1:3", ""},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "controller.result.x8:10", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
-app.logger.plot({1, "estimator.result.state.mL", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
-app.logger.plot({1, "p", "pre"},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
+app.logger.plot({1, "estimator.result.state.pL", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
+app.logger.plot({1, "p", "re"},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "input", ""},"ax",app.UIAxes4,"xrange",[app.time.ts,app.time.te]);
 %app.logger.plot({1, "input", ""},"ax",app.UIAxes4,"xrange",[app.time.ts,app.time.te]);
 % figure();

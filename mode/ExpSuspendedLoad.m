@@ -28,32 +28,36 @@ initial_state.wL = [0; 0; 0];
 %=============================================================================================
 
 agent = DRONE;
-agent.plant = DRONE_EXP_MODEL(agent,Model_Drone_Exp(dt, initial_state, "serial", "COM11"));%有線プロポ
+agent.plant = DRONE_EXP_MODEL(agent,Model_Drone_Exp(dt, initial_state, "serial", "COM7"));%有線プロポ
 agent.parameter = DRONE_PARAM_SUSPENDED_LOAD("DIATONE");
-agent.parameter.set("cableL",0.955);%0.992,0.647,p0.613,0.460
-agent.parameter.set("loadmass",0.0968);%0.968
-agent.sensor.motive = MOTIVE(agent, Sensor_Motive([1,2],0, motive)); % rigid_id,initial_yaw_angle,motive
-Estimator = Estimator_EKF(agent,dt,MODEL_CLASS(agent,Model_Suspended_Load(dt, initial_state, 1,agent,1)), ["p", "q", "pL", "pT"]);
+agent.parameter.set("cableL",0.99);%0.992,0.647,p0.613,0.460
+agent.parameter.set("loadmass",0.05);%0.0968);%0.968
+agent.sensor.motive = MOTIVE(agent, Sensor_Motive(1,0, motive)); % rigid_id,initial_yaw_angle,motive
+Estimator = Estimator_EKF(agent,dt,MODEL_CLASS(agent,Model_Suspended_Load(dt, initial_state, 1,agent,"Load_mL_HL")), ["p", "q", "pL", "pT"]);
 Estimator.sensor_func = @EKF_sensor_multi_rigid;
 agent.estimator.ekf = EKF(agent, Estimator);
 function state = EKF_sensor_multi_rigid(self,~) 
 s = self.sensor.result.rigid;
-ids = self.sensor.result.rigid_id;
+ids = [1,2];
 p = s(ids(1)).p;
-q = s(ids(1)).q;
+q = Quat2Eul(s(ids(1)).q);
 pL = s(ids(2)).p;
 d = pL - p;
 pT = d/norm(d);
-state = [p,q,pL,pT];
+state = [p;q;pL;pT];
 end
-
+agent.estimator.model = agent.estimator.ekf.model;
 agent.input_transform = THRUST2THROTTLE_DRONE(agent,InputTransform_Thrust2Throttle_drone()); % 推力からスロットルに変換
 agent.reference.timevarying = TIME_VARYING_REFERENCE(agent,{"gen_ref_saddle",{"freq",12,"orig",[0;0;0.5],"size",[1,1,0.2*0]*1},"HL"});
+dummy_state = state_copy(agent.reference.timevarying.result.state);
+
+agent.reference.dummy = struct("do",@(varargin) varargin{5}.reference.dummy.result, "result",struct("state",dummy_state));
 agent.controller = HLC_SUSPENDED_LOAD(agent,Controller_HL_Suspended_Load(dt,agent));
 run("ExpBase");
 agent(1).cha_allocation.sensor = "motive";
 agent(1).cha_allocation.estimator = "ekf";
-agent(1).cha_allocation.reference = "timevarying";
+agent(1).cha_allocation.f.reference = "timevarying";
+agent(1).cha_allocation.a.reference = "dummy";
 %%
 % clc
 % for i = 1:time.te
@@ -69,31 +73,35 @@ agent(1).cha_allocation.reference = "timevarying";
 % end
 
 %%
-function result = sensor_do(varargin)
-    result_motive = varargin{5}.sensor.motive.do(varargin);
-    result_forload = varargin{5}.sensor.forload.do(varargin);
-    result_forload.state.p =  result_motive.state.p;
-    result_forload.state.q =  result_motive.state.q;
-    varargin{5}.sensor.result = result_forload;
-    result=result_forload;
-
-    % sensor = varargin{5}.sensor;
-    % result = sensor.motive.do(varargin);
-    % result = merge_result(result,sensor.forload.do(varargin));
-    % varargin{5}.sensor.result = result;
-end
+% function result = sensor_do(varargin)
+%     result_motive = varargin{5}.sensor.motive.do(varargin);
+%     result_forload = varargin{5}.sensor.forload.do(varargin);
+%     result_forload.state.p =  result_motive.state.p;
+%     result_forload.state.q =  result_motive.state.q;
+%     varargin{5}.sensor.result = result_forload;
+%     result=result_forload;
+% 
+%     % sensor = varargin{5}.sensor;
+%     % result = sensor.motive.do(varargin);
+%     % result = merge_result(result,sensor.forload.do(varargin));
+%     % varargin{5}.sensor.result = result;
+% end
 
 function post(app)
+app.logger.plot({1, "controller.result.xd1:3", ""},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
+% app.logger.plot({1, "controller.result.x8:10", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
+app.logger.plot({1, "estimator.result.state.mL", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
+app.logger.plot({1, "estimator.result.state.pL", ""},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "p", "ser"},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "v", "e"},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
-% app.logger.plot({1, "input", ""},"ax",app.UIAxes4,"xrange",[app.time.ts,app.time.te]);
+% app.logger.plot({1, "input", ""},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "input", ""},"ax",app.UIAxes5,"xrange",[app.time.ts,app.time.te]);
-app.logger.plot({1, "inner_input", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
-%%
-app.logger.plot({1, "p", "ser"},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "inner_input", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
-% app.logger.plot({1, "sensor.result.state.pL", "s"},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
-app.logger.plot({1, "estimator.result.state.pL", "e"},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
+% %%
+% app.logger.plot({1, "p", "ser"},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
+% % app.logger.plot({1, "inner_input", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
+% % app.logger.plot({1, "sensor.result.state.pL", "s"},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
+% app.logger.plot({1, "estimator.result.state.pL", "e"},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "sensor.result.state.pT", "s"},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "estimator.result.state.pT", "e"},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "sensor.result.state.p", "s"},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
