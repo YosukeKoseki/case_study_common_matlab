@@ -11,7 +11,7 @@ end
 %%
 ts = 0; % initial time
 dt = 0.025; % sampling period
-te = 25; % terminal time
+te = 50; % terminal time
 time = TIME(ts,dt,te); % instance of time class
 %in_prog_func = @(app) dfunc(app); % in progress plot
 post_func = @(app) dfunc(app); % function working at the "draw button" pushed.
@@ -25,7 +25,7 @@ initial_state.w = [0; 0; 0];
 
 agent = DRONE;
 %agent.parameter = DRONE_PARAM("DIATONE","row","mass",0.5);
-agent.parameter = DRONE_PARAM("DIATONE");
+agent.parameter = DRONE_PARAM("DIATONE", "mass", 0.7);
 agent.plant = MODEL_CLASS(agent,Model_Quat13(dt, initial_state, 1));
 %agent.parameter.set("mass",struct("mass",0.5))
 agent.estimator = EKF(agent, Estimator_EKF(agent,dt,MODEL_CLASS(agent,Model_EulerAngle(dt, initial_state, 1)),["p", "q"]));
