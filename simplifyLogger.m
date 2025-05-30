@@ -1,7 +1,7 @@
 function newLog = simplifyLogger(log,agentNum)
         % log:対象のlog, agentNum:logに含まれる機体数
         newLog.t        = log.Data.t(1:log.k);          % 時間の配列
-        newLog.phase    = log.Data.phase;               % take offやflightなどの情報が入っている配列
+        newLog.phase    = log.Data.phase(1:log.k);      % take offやflightなどの情報が入っている配列
         newLog.k        = log.k;                        % 結果の配列数
         newLog.fExp     = log.fExp;                     % 実験かシミュレーションかのフラグ
         agenti          = log.Data.agent(agentNum);     % 結果の情報
