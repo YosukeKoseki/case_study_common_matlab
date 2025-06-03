@@ -200,7 +200,11 @@ classdef LOGGER < handle % handleクラスにしないとmethodの中で値を�
       end
 
       if opt.separate
-        dirname = "Data/" + tmpname;
+        if obj.fExp == 1
+          dirname = "Data/Exp_data/" + tmpname;
+        else
+          dirname = "Data/Sim_data/" + tmpname;
+        end
         mkdir(dirname);
         filename = dirname + "/Data.mat";
         Data.t = obj.Data.t;
@@ -241,7 +245,11 @@ classdef LOGGER < handle % handleクラスにしないとmethodの中で値を�
         save(dirname + "/plant.mat", "plant");
       else
         filename = tmpname;
-        list = "Data/" + filename + ".mat";
+        if obj.fExp == 1
+            list = "Data/Exp_data/" + filename + ".mat";
+        else
+            list = "Data/Sim_data/" + filename + ".mat";
+        end
         log.Data = obj.Data;
         fn = fieldnames(obj);
 

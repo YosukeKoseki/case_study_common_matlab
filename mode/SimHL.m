@@ -24,8 +24,8 @@ initial_state.w = [0; 0; 0];
 
 
 agent = DRONE;
-%agent.parameter = DRONE_PARAM("DIATONE","row","mass",0.5);
-agent.parameter = DRONE_PARAM("DIATONE", "mass", 0.7);
+agent.parameter = DRONE_PARAM("DIATONE");
+% agent.parameter = DRONE_PARAM("DIATONE", "mass", 0.7);
 agent.plant = MODEL_CLASS(agent,Model_Quat13(dt, initial_state, 1));
 %agent.parameter.set("mass",struct("mass",0.5))
 agent.estimator = EKF(agent, Estimator_EKF(agent,dt,MODEL_CLASS(agent,Model_EulerAngle(dt, initial_state, 1)),["p", "q"]));
