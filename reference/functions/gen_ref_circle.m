@@ -1,6 +1,6 @@
 function ref = gen_ref_circle(param)
 arguments
-    param.freq = 10% 周期
+    param.freq = 20% 周期
     param.init = [0 0 0]% 円の中心
     param.radius = 1.0 % 半径
     param.phase = 0.0 % 位相    
@@ -31,7 +31,7 @@ syms t real
 
 ref=@(t) [x_0+r*sin(2*pi*t/T); %x
     y_0 + r*cos(2*pi*t/T); %y
-    1; %z
+    0.3; %z
     0];
 
 % 圧倒的に遅いので以下のような書き方はしないこと
