@@ -54,5 +54,5 @@ function newLog = simplifyLogger(log,agentNum)
             end
         end
         toc
-        whos 'newLog' %newLog内の容量を表示する
+        % whos 'newLog' %newLog内の容量を表示する
 end

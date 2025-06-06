@@ -1,6 +1,21 @@
 % Data/Exp_data の全てのmatファイルを学習用フォルダData/learning_dataに格納するようにしたい！！
 % 2025.06.02
-function plant_data = save_data_for_machine_learning(Data, phase)
+
+phase = 'atfl';
+
+folder_path = 'Data/Exp_data/'; % 参照したいデータが保存されているフォルダのパス
+learning_folder = 'Data/learning_data/'; % 学習データ保存用フォルダのパス
+
+matfiles = dir(fullfile(folder_path, '*.mat'));
+file_names = {matfiles.name};
+for i = 1:length(file_names)
+    file_name = load([folder_path, file_names{i}]);
+    plant_data = trim_Exp_data(file_name, phase);
+    save(fullfile(learning_folder, file_names{i}), 'plant_data')
+end
+
+
+function plant_data = trim_Exp_data(Data, phase)
 % 任意のフェーズをdouble型に変換する関数
     % Data: cell配列になっていてDNN用に整形したいExpの元データ
     % phase: 'f', 'tf', 'atf', 'fl', 'tfl', 'atfl'から選択可能
@@ -66,7 +81,7 @@ function plant_data = save_data_for_machine_learning(Data, phase)
         time, data.reference.p(3,firstindex:lastindex), '--')
     xlabel('t [s]')
     ylabel('position [m]')
-    legend('xe', 'ye', 'xe', 'xr', 'yr', 'zr')
+    legend('xp', 'yp', 'xp', 'xr', 'yr', 'zr')
     title(['Selected phase: ',phase])
     grid on
     ax = gca;
