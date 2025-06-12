@@ -1,6 +1,6 @@
 % Data/Exp_data の全てのmatファイルを学習用フォルダData/learning_dataに格納するようにしたい！！
 % 2025.06.02
-function plant_data = save_data_for_machine_learning(Data, phase)
+function plant_data = save_data_for_machine_learning_origin(Data, phase)
 % 任意のフェーズをdouble型に変換する関数
     % Data: cell配列になっていてDNN用に整形したいExpの元データ
     % phase: 'f', 'tf', 'atf', 'fl', 'tfl', 'atfl'から選択可能
