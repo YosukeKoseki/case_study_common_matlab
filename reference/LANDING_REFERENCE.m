@@ -9,7 +9,7 @@ classdef LANDING_REFERENCE < handle
     base_time = 0;
     te = 3
     th_offset
-    th_offset0 = 200;
+    th_offset0 = 300;
     initialz
   end
 
