@@ -473,6 +473,8 @@ classdef LOGGER < handle % handleクラスにしないとmethodの中で値を�
         option.xrange = [];
         option.yrange = [];
         option.zrange = [];
+        option.fontsize {mustBeNumeric} = 11;
+        option.linewidth {mustBeNumeric} = 0.5;
       end
 
       ranget = option.time; % time range
@@ -540,9 +542,9 @@ classdef LOGGER < handle % handleクラスにしないとmethodの中で値を�
                 lt = '-'; % line
             end
             if length(ps) == 3
-              plot3(ax,tmpx, tmpy, tmpz,LineStyle=lt);
+              plot3(ax,tmpx, tmpy, tmpz,LineStyle=lt, LineWidth=option.linewidth);
             else
-              plot(ax,tmpx, tmpy(:, :, 1),LineStyle=lt); % tmpy(1:size(tmpx,1),:,1)
+              plot(ax,tmpx, tmpy(:, :, 1),LineStyle=lt, LineWidth=option.linewidth); % tmpy(1:size(tmpx,1),:,1)
               if option.xrange
                 xlim(ax,option.xrange);
               else
@@ -551,6 +553,8 @@ classdef LOGGER < handle % handleクラスにしないとmethodの中で値を�
               ylim(ax,[min(tmpy,[],'all'), max(tmpy,[],'all')+0.01]);
             end
 
+            set(ax.XAxis, fontsize=option.fontsize-2)
+            set(ax.YAxis, fontsize=option.fontsize-2)
             hold(ax, "on");
             grid(ax, "on");
 
@@ -562,26 +566,26 @@ classdef LOGGER < handle % handleクラスにしないとmethodの中で値を�
             % set title label legend
             if length(ps) == 1
               ps = ["t", ps];
-              xlabel(ax,"Time [s]");
+              xlabel(ax,"Time [s]", Fontsize=option.fontsize);
             else
-              xlabel(ax,ps(1));
+              xlabel(ax,ps(1), Fontsize=option.fontsize);
             end
 
             switch ps(2)
               case "p"
-                title(ax,strcat("Position p of agent", string(n)));
+                title(ax,strcat("Position p of agent", string(n)), Fontsize=option.fontsize);
               case "q"
-                title(ax,strcat("Attitude q of agent", string(n)));
+                title(ax,strcat("Attitude q of agent", string(n)), Fontsize=option.fontsize);
               case "v"
-                title(ax,strcat("Velocity v of agent", string(n)));
+                title(ax,strcat("Velocity v of agent", string(n)), Fontsize=option.fontsize);
               case "w"
-                title(ax,strcat("Angular velocity w of agent", string(n)));
+                title(ax,strcat("Angular velocity w of agent", string(n)), Fontsize=option.fontsize);
               case "z"
-                title(ax,strcat("Position error integration of agent", string(n)));
+                title(ax,strcat("Position error integration of agent", string(n)), Fontsize=option.fontsize);
               case "input"
-                title(ax,strcat("Input u of agent", string(n)));
+                title(ax,strcat("Input u of agent", string(n)), Fontsize=option.fontsize);
               otherwise
-                title(ax,ps(2));
+                title(ax,ps(2), FontSize=option.fontsize);
             end
 
             if ps(1) ~= "t"
@@ -612,8 +616,8 @@ classdef LOGGER < handle % handleクラスにしないとmethodの中で値を�
               plegend = [plegend, append(vrange, att)];
             end
 
-            ylabel(ax, ps(2));
-            if length(ps) == 3; zlabel(ax, ps(3)); end
+            ylabel(ax, ps(2), Fontsize=option.fontsize);
+            if length(ps) == 3; zlabel(ax, ps(3), Fontsize=option.fontsize); end
           end
 
         end
@@ -645,7 +649,6 @@ classdef LOGGER < handle % handleクラスにしないとmethodの中で値を�
 
           text(ax,ax.XLim(2) - (ax.XLim(2) - ax.XLim(1)) * 0.25, ax.YLim(2) + (ax.YLim(2) - ax.YLim(1)) * yoffset, txt);
         end
-
       end
 
     end
