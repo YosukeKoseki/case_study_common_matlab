@@ -21,7 +21,7 @@ logger = LOGGER(fullpath);
 
 %% プロット
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fsave = 0;
+fsave = 1;
 % [Recomendation] Initially, you should check the figure with fsave = 0, then chose save style.
 % [推奨] 最初はfsave = 0でfigureを確認し，その後 保存形式を選択
 % 0:no save
@@ -80,11 +80,11 @@ for i=1:length(settings.target)
     end
 
     if fsave == 1
-        savefig(['...plot/fig/', char(settings.target(i)), '.fig']);
+        savefig(['plot/fig/', char(settings.target(i)), '.fig']);
     elseif fsave == 2
-        savefig(['...plot/fig/', char(settings.target(i)), '.png']);
+        savefig(['plot/fig/', char(settings.target(i)), '.png']);
     elseif fsave == 3
-        savefig(['...plot/fig/', char(settings.target(i)), '.pdf']);
+        savefig(['plot/fig/', char(settings.target(i)), '.pdf']);
     end
 end
 
