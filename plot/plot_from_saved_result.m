@@ -4,7 +4,9 @@
 % 最初は全てのセクションを実行する．
 % データの読み込みができたら，プロットセクションだけ実行すれば手間が省ける．
 % プロットセクションのsettingsを変更して調整することでmainGUIの画面上とは違ういい感じのグラフが取れる
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 50行付近のsettingsは色々見てください！！  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 分からないことや追加したい機能などあったらSlackで聞いてください
 % 凡例に関しては，書き方・位置を要検討
 % プロットしたいフェーズを選べるようになると嬉しい
@@ -24,6 +26,7 @@ end
 cellfun(@(xx) addpath(xx), tmp, 'UniformOutput', false);
 close all hidden; clear; clc;
 userpath('clear');
+
 %% データの読み込み
 fprintf('MATファイルを選択してください:')
 [filename, pathname] = uigetfile('*.mat', 'MATファイルを選択してください');
@@ -41,20 +44,22 @@ fsave = 0;
 % 1:save as ".fig"
 % 2:save as ".png"
 % 3:save as ".pdf"
+% 4:save as ".eps"
 
-ftitle = 0; % defalt=1 -> グラフタイトルあり
+ftitle = 1; % defalt=1 -> グラフタイトルあり
 settings.fcolor = 1; % default=1 -> フェーズごとの背景色あり
 
 %%%%%%%%%%%%%%%%%%%%%%%% chose target %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 settings.target = ["p", "q", "v", "w", "input", "p1-p2", "p1-p2-p3"];
+% settings.target = ["p", "v", "input"];
 % プロットしたいグラフの情報                                          %
 % p: position    q: angle    v: velocity    w: angular velocity     %
 % input: controller input                                           %
 % p1-p2: x-y 2D plot    p1-p2-p3: x-y-z 3D plot                     %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-settings.fontsize = 18;    % default=11
-settings.linewidth = 2;    % default=0.5
+settings.fontsize = 11;    % default=11 オススメ=18
+settings.linewidth = 0.5;    % default=0.5 オススメ=1.5
 settings.agent_id = 1;
 
 % estimator, sensor, reference, (plant) どの値を表示するかは
@@ -136,28 +141,30 @@ for i=1:length(settings.target)
     if fsave == 1
         savefig(['plot/fig/', erase(filename, '.mat'), char(settings.target(i)), '.fig']);
     elseif fsave == 2
-        savefig(['plot/fig/', erase(filename, '.mat'), char(settings.target(i)), '.png']);
+        saveas(fig, ['plot/fig/', erase(filename, '.mat'), char(settings.target(i))], 'png');
     elseif fsave == 3
-        savefig(['plot/fig/', erase(filename, '.mat'), char(settings.target(i)), '.pdf']);
+        saveas(fig, ['plot/fig/', erase(filename, '.mat'), char(settings.target(i))], 'pdf');
+    elseif fsave == 4
+        saveas(fig, ['plot/fig/', erase(filename, '.mat'), char(settings.target(i))], 'epsc');
     end
 end
 
 %% function
 function att = select_attribute(target, attribute)
 text = cell(1, 4);
-text{1} = ['\n<キーボードで[', char(target), ']用の属性を入力>\n'];%'\n<Keybord input attribute for [', char(target), ']>\n', 
-text{2} = ['{', char(strjoin(attribute, "")), '}が使えます  '];%'You can use {', char(strjoin(attribute, "")), '}\n
+text{1} = ['\n<キーボードで「', char(target), '」用の値の種類を入力>\n'];%'\n<Keybord input attribute for [', char(target), ']>\n', 
+text{2} = ['   {', char(strjoin(attribute, "")), '}が使えます  '];%'You can use {', char(strjoin(attribute, "")), '}\n
 if length(attribute) == 4
-    text{3} = ['ex) ', char(attribute(1)), ', ', [char(attribute(1)), char(attribute(2))], ...
+    text{3} = ['例）', char(attribute(1)), ', ', [char(attribute(1)), char(attribute(2))], ...
         ', ', [char(attribute(1)), char(attribute(2)), char(attribute(3))],...
         ', ', [char(attribute(1)), char(attribute(2)), char(attribute(3)), char(attribute(4))],'\n'];
 elseif length(attribute) == 3
-    text{3} = ['ex) ', char(attribute(1)), ', ', [char(attribute(1)), char(attribute(2))], ...
+    text{3} = ['例）', char(attribute(1)), ', ', [char(attribute(1)), char(attribute(2))], ...
         ', ', [char(attribute(1)), char(attribute(2)), char(attribute(3))], '\n'];
 elseif length(attribute) == 2
-    text{3} = ['ex) ', char(attribute(1)), ', ', [char(attribute(1)), char(attribute(2))], '\n'];
+    text{3} = ['例）', char(attribute(1)), ', ', [char(attribute(1)), char(attribute(2))], '\n'];
 else
-    text{3} = ['ex) ', char(attribute(1)), '\n'];
+    text{3} = ['例）', char(attribute(1)), '\n'];
 end
 text{4} = 'Input attribute: ';
 fprintf([text{1:3}])
