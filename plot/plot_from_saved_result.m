@@ -21,7 +21,7 @@ logger = LOGGER(fullpath);
 
 %% プロット
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fsave = 1;
+fsave = 0;
 % [Recomendation] Initially, you should check the figure with fsave = 0, then chose save style.
 % [推奨] 最初はfsave = 0でfigureを確認し，その後 保存形式を選択
 % 0:no save
@@ -33,15 +33,15 @@ ftitle = 0; % defalt=1 -> with figure title
 
 %%%%%%%%%%%%%%%%%%%%%%%% chose target %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % settings.target = ["p", "q", "v", "w", "input", "p1-p2", "p1-p2-p3"];
-settings.target = ["p", "p1-p2-p3"];
+settings.target = ["p"];
 %                                                                   %
 % p: position    q: angle    v: velocity    w: angular velocity     %
 % input: controller input                                           %
 % p1-p2: x-y 2D plot    p1-p2-p3: x-y-z 3D plot                     %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-settings.fontsize = 11;      % default=11
-settings.linewidth = 0.5;    % default=0.5
+settings.fontsize = 18;      % default=11
+settings.linewidth = 2;    % default=0.5
 settings.agent_id = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -91,7 +91,7 @@ end
 %% function
 function att = select_attribute(target, attribute)
 text = cell(1, 4);
-text{1} = ['<キーボードで[', char(target), ']用の属性を入力>\n'];%'\n<Keybord input attribute for [', char(target), ']>\n', 
+text{1} = ['\n<キーボードで[', char(target), ']用の属性を入力>\n'];%'\n<Keybord input attribute for [', char(target), ']>\n', 
 text{2} = ['{', char(strjoin(attribute, "")), '}が使えます  '];%'You can use {', char(strjoin(attribute, "")), '}\n
 if length(attribute) == 4
     text{3} = ['ex) ', char(attribute(1)), ', ', [char(attribute(1)), char(attribute(2))], ...
