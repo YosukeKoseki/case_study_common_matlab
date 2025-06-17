@@ -506,10 +506,10 @@ classdef LOGGER < handle % handleクラスにしないとmethodの中で値を�
                 if isscalar(list)
                     spfi = ax;
                 else
-                    ax = subplot(frow, fcol, fi);
+                    subplot(frow, fcol, fi,ax);
                 end
                 plegend = [];
-                if length(list{fi}{1}) == 1
+                if isscalar(list{fi}{1})
                     List = {list{fi}};
                 else
                     List = list{fi};

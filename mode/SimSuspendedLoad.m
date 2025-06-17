@@ -1,4 +1,4 @@
-clc
+%clc
 ts = 0; % initial time
 % dt = 0.025; % sampling period
 dt = 0.025; % sampling period
@@ -68,17 +68,12 @@ agent(1).cha_allocation.f.reference = "timevarying";
 %%
 
 function post(app)
-app.logger.plot({1, "controller.result.xd1:3", ""},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
-% app.logger.plot({1, "controller.result.x8:10", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
-app.logger.plot({1, "estimator.result.state.pL", ""},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
-app.logger.plot({1, "p", "re"},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
-% app.logger.plot({1, "input", ""},"ax",app.UIAxes4,"xrange",[app.time.ts,app.time.te]);
-%app.logger.plot({1, "input", ""},"ax",app.UIAxes4,"xrange",[app.time.ts,app.time.te]);
+% app.logger.plot({{1,"p","er"},{1,"estimator.result.state.pL","e"}},{1, "input", ""},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
+app.logger.plot({{1,"p","er"},{1,"estimator.result.state.pL","e"}},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
 % figure();
 % app.logger.plot({1, "estimator.result.state.wL", ""},"ax",gca,"xrange",[app.time.ts,app.time.te]);
 % figure();
 % app.logger.plot({1, "estimator.result.state.vL", ""},"ax",gca,"xrange",[app.time.ts,app.time.te]);
-% app.logger.plot({1, "inner_input", ""},"ax",app.UIAxes6,"xrange",[app.time.ts,app.time.te]);
 end
 function in_prog(app)
 app.TextArea.Text = ["estimator : " + app.agent(1).estimator.result.state.get()];
