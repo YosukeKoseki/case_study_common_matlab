@@ -24,7 +24,7 @@ for i = [1:4,9:12]
 end
 env = triangulation(Tri,Points);
 
-motive = Connector_Natnet_sim(1, dt, 0); % imitation of Motive camera (motion capture system)
+motive = Connector_Natnet_sim(dt); % imitation of Motive camera (motion capture system)
 fExp = 0;
 logger = LOGGER(1, size(ts:dt:te, 2), fExp, [],[]);
 

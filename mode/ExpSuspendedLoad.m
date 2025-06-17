@@ -57,7 +57,6 @@ run("ExpBase");
 agent(1).cha_allocation.sensor = "motive";
 agent(1).cha_allocation.estimator = "ekf";
 agent(1).cha_allocation.f.reference = "timevarying";
-agent(1).cha_allocation.a.reference = "dummy";
 %%
 % clc
 % for i = 1:time.te

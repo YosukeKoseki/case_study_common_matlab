@@ -79,6 +79,7 @@ classdef LANDING_REFERENCE < handle
                 Zd = curve_interpolation_9order(t,obj.te,obj.base_state(3),0,obj.initialz,0);
             elseif t> obj.te
                 Zd = zeros(1,5);
+                Zd(1) = obj.initialz;
             end
             Xd(1:3,1) = obj.base_state(1:3);
             Xd(3,1) = Zd(1);
