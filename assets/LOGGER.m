@@ -326,7 +326,8 @@ classdef LOGGER < handle % handleクラスにしないとmethodの中で値を�
                     ranget(2) = max(obj.Data.t);
                 end
                 if ~isempty(option.phase)
-                    ids=contains(string(char(obj.Data.phase)),string(option.phase(:)));
+                    phase = char(option.phase);
+                    ids=contains(string(char(obj.Data.phase)),string(phase(:)));
                     ranget = obj.Data.t(4+[find(ids(5:end),1),find(ids(5:end),1,'last')])';
                 end
                 if sum(strcmp(target, {'time', 't'}))
