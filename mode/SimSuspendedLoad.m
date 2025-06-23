@@ -68,9 +68,25 @@ agent(1).cha_allocation.f.reference = "timevarying";
 %%
 
 function post(app)
+app.logger.plot({1, "input", ""},"ax",app.UIAxes);
+% 刻み時間描画
+t0id = find(app.logger.Data.phase==97,1,'last')+1;
+teid = find(app.logger.Data.phase==0,1,'first')-1;
+dt = diff(app.logger.Data.t(t0id:teid));
+t = app.logger.Data.t(t0id:teid-1);
+figure(100)
+[t,dt]
+plot(t,dt);
+% app.logger.plot({1,"p","e"})
+hold on
+% yline(0.025,"LineWidth",0.5)
+% ylim([0 0.05])
+hold off
+grid on
+legend("dt","upper limit")
 % app.logger.plot({{1,"p","er"},{1,"estimator.result.state.pL","e"}},{1, "input", ""},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({{1,"estimator.result.state.mL","e"},{1,"estimator.result.state.pL","e"},{1,"p","r"}},"ax",app.UIAxes);
-app.logger.plot({{1,"estimator.result.state.mL","e"},{1,"p","re"}},"ax",app.UIAxes);
+% app.logger.plot({{1,"estimator.result.state.mL","e"},{1,"p","re"}},"ax",app.UIAxes);
 % figure();
 % app.logger.plot({1, "estimator.result.state.wL", ""},"ax",gca,"xrange",[app.time.ts,app.time.te]);
 % figure();
