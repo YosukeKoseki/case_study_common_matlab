@@ -40,7 +40,7 @@ agent.cha_allocation = struct("reference","time_varying", ...
 motive.getData(agent);
 
 function dfunc(app)
-app.logger.plot({1, "p", "er"},"ax",app.UIAxes);
+app.logger.plot({1, "p", "er"},"ax",app.UIAxes,"phase","tf");
 % app.logger.plot({1, "p", "per"},"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "q", "s"},"ax",app.UIAxes2,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "v", "er"},"ax",app.UIAxes3,"xrange",[app.time.ts,app.time.te]);
