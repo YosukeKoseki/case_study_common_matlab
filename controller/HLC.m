@@ -13,7 +13,7 @@ classdef HLC < handle
       obj.param = param;
       obj.param.P = self.parameter.get(obj.parameter_name);
       obj.result.input = zeros(self.estimator.model.dim(2),1);
-      disp('目標軌道を表示します')
+      disp('目標軌道:x, y, zを表示します')
     end
 
     function result = do(obj,varargin)
