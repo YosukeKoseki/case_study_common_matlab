@@ -20,10 +20,15 @@ classdef SIMPLE_MEC < handle
         function obj = SIMPLE_MEC(self)
             obj.self = self;
             obj.param = self.parameter.get(obj.parameter_name);
+            obj.result.nominal_p = zeros(3,1);
+            obj.result.nominal_q = zeros(3,1);
+            obj.result.nominal_v = zeros(3,1);
+            obj.result.nominal_w = zeros(3,1);
             obj.result.nominal_input = zeros(self.estimator.model.dim(2),1);
             obj.result.delta_input = zeros(self.estimator.model.dim(2),1);
             obj.result.input = zeros(self.estimator.model.dim(2),1);
-            obj.D_thrust = [10, 100];
+            % obj.D_thrust = [100, 20];
+            obj.D_thrust = [1, 1];
             obj.D_roll = [1, 1, 1, 1];
             obj.D_pitch = [1, 1, 1, 1];
             obj.D_yaw = [1, 1];
@@ -42,6 +47,10 @@ classdef SIMPLE_MEC < handle
             dx = roll_pitch_yaw_thrust_torque_physical_parameter_model(obj.x_pre, obj.pre_input, obj.param);
             x_nominal = obj.x_pre + dx*dt;
             %-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%
+            obj.result.nominal_p = x_nominal(1:3);
+            obj.result.nominal_q = x_nominal(4:6);
+            obj.result.nominal_v = x_nominal(7:9);
+            obj.result.nominal_w = x_nominal(10:12);
 
             % プラント値取得
             x_plant = obj.self.estimator.result.state.get; % 現時刻の推定値
@@ -52,11 +61,14 @@ classdef SIMPLE_MEC < handle
             du_roll = obj.D_roll*[z(1); z(7); z(4); z(10)];     % p_x; v_x; θ_roll; ω_roll
             du_pitch = obj.D_pitch*[z(2); z(8); z(5); z(11)];   % p_y; v_y; θ_roll; ω_roll
             du_yaw = obj.D_yaw*[z(6); z(12)];                   % θ_yaw; ω_yaw
-            obj.result.delta_input = -1*[du_thrust; du_roll; du_pitch; du_yaw];
+            obj.result.delta_input = -1*[du_thrust; du_roll; du_pitch; du_yaw]; % 符号注意！！
+            obj.result.delta_input = [0;0;0;0];
 
             obj.result.nominal_input = varargin{5}.controller.nominal.result.input; % ノミナル入力を保存
             obj.result.input = obj.result.nominal_input + obj.result.delta_input;
             result = obj.result;
+            
+            disp(obj.result.delta_input')
         end
     end
 end

@@ -35,8 +35,8 @@ agent.plant = MODEL_CLASS(agent,Model_Quat13(dt, initial_state, 1)); % Model_Qua
 
 % ↓パラメータの上書き モデル誤差をプラントに与える
 agent.plant.param(1) = 0.7875; % ５％増->0.7875, ５％減->0.7125
-% agent.plant.param(6) = 0.2; % 0.18<jx,jy<0.22ぐらいが良き frequency=5の時
-% agent.plant.param(7) = 0.2; % 同上
+agent.plant.param(6) = 0.2; % 0.18<jx,jy<0.22ぐらいが良き frequency=5の時
+agent.plant.param(7) = 0.2; % 同上
 % agent.plant.param(8) = 0.36; % 0.18<jzぐらいが良き
 % agent.plant.param(6) = 0.12; % 0.1<jx,jy<0.12 frequency=2.5の時
 % agent.plant.param(7) = 0.12; % 
@@ -45,7 +45,7 @@ agent.plant.param(1) = 0.7875; % ５％増->0.7875, ５％減->0.7125
 %===================================================================================================================================================
 agent.estimator = EKF(agent, Estimator_EKF(agent,dt,MODEL_CLASS(agent,Model_EulerAngle(dt, initial_state, 1)),["p", "q"]));
 agent.sensor = MOTIVE(agent, Sensor_Motive(1,0, motive));
-agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",10,"init",[0;0;1],"radius",1.0},"HL"});
+agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",5,"init",[0;0;1],"radius",1.0},"HL"});
 
 run("ExpBase");
 agent.cha_allocation.reference = "time_varying";
@@ -58,14 +58,15 @@ function dfunc(app)
 LW = 1.5; % Linewidth 
 FS = 20; % Fontsize
 phase = "tfl";
+% phase = "f";
 app.logger.plot({1, "p", "er"},"ax",app.UIAxes,"phase",phase, "Linewidth",LW, "Fontsize",FS);
-app.logger.plot({1, "p", "er"},"phase",phase, "fig_num",1, "Linewidth",LW, "Fontsize",FS); % 位置: p_x,p_y,p_z
-app.logger.plot({1, "q", "e"}, "phase",phase, "fig_num",2, "Linewidth",LW, "Fontsize",FS); % 角度: θ_roll, θ_pitch, θ_yaw
-app.logger.plot({1, "v", "er"}, "phase",phase, "fig_num",3, "Linewidth",LW, "Fontsize",FS);% 速度: v_x, v_y, v_z
-app.logger.plot({1, "w", "e"}, "phase",phase, "fig_num",4, "Linewidth",LW, "Fontsize",FS); % 角速度: ω_roll, ω_ptich, ω_yaw
+app.logger.plot({{1, "p", "er"}, {1, "controller.result.nominal_p", ""}},"phase",phase, "fig_num",1, "Linewidth",LW, "Fontsize",FS); % 位置: p_x,p_y,p_z
+app.logger.plot({{1, "q", "e"}, {1, "controller.result.nominal_q", ""}}, "phase",phase, "fig_num",2, "Linewidth",LW, "Fontsize",FS); % 角度: θ_roll, θ_pitch, θ_yaw
+app.logger.plot({{1, "v", "er"}, {1, "controller.result.nominal_v", ""}}, "phase",phase, "fig_num",3, "Linewidth",LW, "Fontsize",FS);% 速度: v_x, v_y, v_z
+app.logger.plot({{1, "w", "e"}, {1, "controller.result.nominal_w", ""}}, "phase",phase, "fig_num",4, "Linewidth",LW, "Fontsize",FS); % 角速度: ω_roll, ω_ptich, ω_yaw
 app.logger.plot({1, "input", ""}, "phase",phase, "fig_num",6, "Linewidth",LW, "Fontsize",24); % 制御入力: Thrust, roll, pitch, yaw
 app.logger.plot({1, "controller.result.delta_input", ""}, "phase",phase, "fig_num",7, "Linewidth",LW, "Fontsize",24);
 
 app.logger.plot({1, "p1-p2", "er"}, "phase",phase, "color", 0, "fig_num",8, "Linewidth",LW, "Fontsize",FS); % x-y軌跡
-app.logger.plot({1, "p1-p2-p3", "er"}, "phase",phase, "color", 0, "fig_num",9, "Linewidth",LW, "Fontsize",FS); % x-y-z軌跡
+% app.logger.plot({1, "p1-p2-p3", "er"}, "phase",phase, "color", 0, "fig_num",9, "Linewidth",LW, "Fontsize",FS); % x-y-z軌跡
 end
