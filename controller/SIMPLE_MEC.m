@@ -27,10 +27,12 @@ classdef SIMPLE_MEC < handle
             obj.result.nominal_input = zeros(self.estimator.model.dim(2),1);
             obj.result.delta_input = zeros(self.estimator.model.dim(2),1);
             obj.result.input = zeros(self.estimator.model.dim(2),1);
-            % obj.D_thrust = [100, 20];
-            obj.D_thrust = [1, 1];
-            obj.D_roll = [1, 1, 1, 1];
-            obj.D_pitch = [1, 1, 1, 1];
+            obj.D_thrust = [100, 20];
+            obj.D_roll = [100, 20, 10, 2];
+            obj.D_pitch = [100, 20, 10, 2];
+            % obj.D_thrust = [1, 1];
+            % obj.D_roll = [1, 1, 1, 1];
+            % obj.D_pitch = [1, 1, 1, 1];
             obj.D_yaw = [1, 1];
             obj.x_pre = self.estimator.result.state.get;
             obj.pre_input = zeros(self.estimator.model.dim(2),1);
@@ -40,7 +42,7 @@ classdef SIMPLE_MEC < handle
             %-%-%-% ノミナル状態更新 %-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%
             if isfield(varargin{3}.Data.agent, "controller") && isfield(varargin{3}.Data.agent, "estimator")... % ループの最初はLoggingされていなくて，参照できないのを回避
             && length(varargin{3}.Data.agent.estimator.result)>=2
-                obj.pre_input = varargin{3}.Data.agent.controller.result{end}.input; % LOGGERから前時刻の入力を取得
+                obj.pre_input = varargin{3}.Data.agent.controller.result{end}.nominal_input; % LOGGERから前時刻の入力を取得
                 obj.x_pre = varargin{3}.Data.agent.estimator.result{end}.state.get; % LOGGERから前時刻の状態を取得
             end
             dt = varargin{1}.dt;
@@ -62,7 +64,7 @@ classdef SIMPLE_MEC < handle
             du_pitch = obj.D_pitch*[z(2); z(8); z(5); z(11)];   % p_y; v_y; θ_roll; ω_roll
             du_yaw = obj.D_yaw*[z(6); z(12)];                   % θ_yaw; ω_yaw
             obj.result.delta_input = -1*[du_thrust; du_roll; du_pitch; du_yaw]; % 符号注意！！
-            obj.result.delta_input = [0;0;0;0];
+            % obj.result.delta_input = [0;0;0;0];
 
             obj.result.nominal_input = varargin{5}.controller.nominal.result.input; % ノミナル入力を保存
             obj.result.input = obj.result.nominal_input + obj.result.delta_input;

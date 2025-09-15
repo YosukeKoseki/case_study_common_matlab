@@ -35,12 +35,8 @@ agent.plant = MODEL_CLASS(agent,Model_Quat13(dt, initial_state, 1)); % Model_Qua
 
 % ↓パラメータの上書き モデル誤差をプラントに与える
 agent.plant.param(1) = 0.7875; % ５％増->0.7875, ５％減->0.7125
-agent.plant.param(6) = 0.2; % 0.18<jx,jy<0.22ぐらいが良き frequency=5の時
-agent.plant.param(7) = 0.2; % 同上
-% agent.plant.param(8) = 0.36; % 0.18<jzぐらいが良き
-% agent.plant.param(6) = 0.12; % 0.1<jx,jy<0.12 frequency=2.5の時
-% agent.plant.param(7) = 0.12; % 
-% agent.plant.param(8) = 0.1; % 
+agent.plant.param(6) = 0.24; % 0.18<jx,jy<0.22ぐらいが良き frequency=5の時
+agent.plant.param(7) = 0.24; % 同上
 % 2~5,10~18はagent.plant.method='@roll_pitch_yaw_thrust_torque_physical_parameter_model'を使っている限り意味が無い
 %===================================================================================================================================================
 agent.estimator = EKF(agent, Estimator_EKF(agent,dt,MODEL_CLASS(agent,Model_EulerAngle(dt, initial_state, 1)),["p", "q"]));
