@@ -34,9 +34,12 @@ classdef SIMPLE_MEC < handle
             % obj.D_thrust = [1, 1];
             % obj.D_roll = [1, 1, 1, 1];
             % obj.D_pitch = [1, 1, 1, 1];
-            obj.D_thrust = [400, 20];
-            obj.D_roll = [400, 20, 10, 2];
-            obj.D_pitch = [400, 20, 10, 2];
+            % obj.D_thrust = [400, 20];
+            % obj.D_roll = [400, 20, 10, 2];
+            % obj.D_pitch = [400, 20, 10, 2];
+            obj.D_thrust = [100, 20];
+            obj.D_roll = [100, 20, 5, 1];
+            obj.D_pitch = [100, 20, 5, 1];
             obj.D_yaw = [1, 1];
         end
         
