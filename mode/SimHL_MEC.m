@@ -42,6 +42,7 @@ agent.plant.param(7) = 0.24; % 同上
 agent.estimator = EKF(agent, Estimator_EKF(agent,dt,MODEL_CLASS(agent,Model_EulerAngle(dt, initial_state, 1)),["p", "q"]));
 agent.sensor = MOTIVE(agent, Sensor_Motive(1,0, motive));
 agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",5,"init",[0;0;1],"radius",1.0},"HL"});
+% agent.controller = HLC_ATMEC(agent,Controller_HL(dt));
 
 run("ExpBase");
 agent.cha_allocation.reference = "time_varying";
