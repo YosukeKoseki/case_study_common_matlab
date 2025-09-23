@@ -18,9 +18,9 @@ end
     
     %% 動作チェック用
     % % % URL:https://manabitimes.jp/math/898 より
-    % 円軌道
-    x = sin(2*pi*t/T);
-    y = cos(2*pi*t/T);
+    % % 円軌道
+    % x = sin(2*pi*t/T);
+    % y = cos(2*pi*t/T);
 
     % % アステロイド曲線（星芒形）
     % x = (sin(2*pi*t/T))^3;
@@ -40,7 +40,18 @@ end
     % y = B*sin(b*2*pi*t/T);
 
     %% 持ってきてもらったリファレンス情報を追加
-    
+    % % 1班　山田遥斗　2312114
+    % x = cos(2*pi*t/T);
+    % y = sin(4*pi*t/T);
+
+    % % 1班　泉崎優斗　2312007
+    % x = sin(2*pi*t/T);
+    % y = cos(2*pi*3*t/T);
+
+    % 1班　竹内優音　2312067
+    x = 0.5*(cos(t)*(1+cos(t)));
+    y = 0.5*(sin(t)*(1+cos(t)));
+
     ref = @(t) [x_0+x;y_0+y;z_0;0];
 end
 
