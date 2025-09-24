@@ -17,17 +17,17 @@ initial_state.w = [0; 0; 0];
 
 % % DRONEクラスの定義 % % % %
 agent = DRONE;
-agent.plant = DRONE_EXP_MODEL(agent,Model_Drone_Exp(dt, initial_state, "serial", "COM4")); % (Simと異なる部分)
+agent.plant = DRONE_EXP_MODEL(agent,Model_Drone_Exp(dt, initial_state, "serial", "COM3")); % (Simと異なる部分)
 agent.parameter = DRONE_PARAM("DIATONE");
 agent.estimator = EKF(agent, Estimator_EKF(agent,dt,MODEL_CLASS(agent,Model_EulerAngle(dt, initial_state, 1)),["p", "q"]));
 agent.sensor = MOTIVE(agent, Sensor_Motive(1,0, motive));
 % agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",10,"init",[0;0;1],"radius",1.0},"HL"});
-agent.reference.timevarying = TIME_VARYING_REFERENCE(agent,{"case_study_trajectory",{"freq",10,"init",[0;0;1]},"HL"});
+agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"case_study_trajectory",{"freq",10,"init",[0;0;1]},"HL"});
 agent.controller = HLC(agent,Controller_HL(dt));
 agent.input_transform = THRUST2THROTTLE_DRONE(agent,InputTransform_Thrust2Throttle_drone()); % (Simと異なる部分)
 
 run("ExpBase");
-agent.cha_allocation.reference = "timevarying";
+agent.cha_allocation.reference = "time_varying";
 
 function post(app)
 LW = 1.5; % Linewidth 
