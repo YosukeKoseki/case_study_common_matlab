@@ -45,8 +45,8 @@ end
     % y = sin(4*pi*t/T);
 
     % % 1班　泉崎優斗　2312007
-    % x = sin(2*pi*t/T);
-    % y = cos(2*pi*3*t/T);
+    % x = sin(2*pi*2*t/T);
+    % y = cos(2*pi*3*t/T)
 
     % 1班　竹内優音　2312067
     x = 0.5*(cos(t)*(1+cos(t)));
