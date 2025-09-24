@@ -40,7 +40,13 @@ end
     % y = B*sin(b*2*pi*t/T);
 
     %% 持ってきてもらったリファレンス情報を追加
-    
+    % % ４班　髙山幸汰　2312066
+    % x = 0.5*cos(2*pi*t/T)+0.4 *cos(6*pi*t/T);
+    % y = 0.5*sin(2*pi*t/T)-0.4* sin(6*pi*t/T);
+
+    % ４班　島野嵩士　2312047
+    x = sin(2*pi*t/T)/1.5-sin(pi*t/T)/10-sin(pi*t/T/2)/8;
+    y = cos(2*pi*t/T)/1.5-cos(pi*t/T)/10-cos(pi*t/T/2)/8; 
     ref = @(t) [x_0+x;y_0+y;z_0;0];
 end
 
