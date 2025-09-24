@@ -40,17 +40,22 @@ end
     % y = B*sin(b*2*pi*t/T);
 
     %% 持ってきてもらったリファレンス情報を追加
-    % % ３班　佐藤里咲　2312044
+    % % % ３班　佐藤里咲　2312044
     % x = 16 * (sin(t)).^3;
     % y = 13 * cos(t) - 5 * cos(2*t) - 2 * cos(3*t) - cos(4*t);
     
-    % ３班　松坂光　2312096
-    x = sin(1*pi*t/T)*cos(2*pi*t/T);
-    y = sin(1*pi*t/T)*sin(2*pi*t/T);
+    % % ３班　松坂光　2312096
+    % x = sin(1*pi*t/T)*cos(2*pi*t/T);
+    % y = sin(1*pi*t/T)*sin(2*pi*t/T);
     
-    % ３班　荻原滉明　2312024
-    x = sin(2*pi*t/T);c
-    y = 0.5*sin(4*pi*t/T);
+    % % ３班　荻原滉明　2312024
+    % x = sin(2*pi*t/T);
+    % y = 0.5*sin(4*pi*t/T);
+
+    % ３班　関野凌雅　2312059
+    theta = (2*pi*0.5 / T) * t;
+    x = 0.035 * exp(b * theta) .* cos(theta);
+    y = 0.105 * exp(b * theta) .* sin(theta);
 
     ref = @(t) [x_0+x;y_0+y;z_0;0];
 end
