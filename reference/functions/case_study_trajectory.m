@@ -54,8 +54,8 @@ end
 
     % ３班　関野凌雅　2312059
     theta = (2*pi*0.5 / T) * t;
-    x = 0.035 * exp(b * theta) .* cos(theta);
-    y = 0.105 * exp(b * theta) .* sin(theta);
+    x = 0.035 * exp(0.105 * theta) .* cos(theta);
+    y = 0.035 * exp(0.105 * theta) .* sin(theta);
 
     ref = @(t) [x_0+x;y_0+y;z_0;0];
 end
