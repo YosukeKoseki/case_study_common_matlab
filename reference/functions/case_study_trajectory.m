@@ -40,17 +40,19 @@ end
     % y = B*sin(b*2*pi*t/T);
 
     %% 持ってきてもらったリファレンス情報を追加
-    % % 2班　遠藤翔　2312017
-    % x = 0.6*cos(t/T)-0.1*cos(6*t/T);
-    % y = 0.6*sin(t/T)-0.1*sin(6*t/T);
+    % 2班　遠藤翔　2312017
+    T = 2.5; % 周期T=10だと長すぎるかも．T=2.5で20s flightして１周する感じ．
+    x = 0.6*cos(t/T)-0.1*cos(6*t/T);
+    y = 0.6*sin(t/T)-0.1*sin(6*t/T);
 
     % % 2班　平児玉裕翔　2312092
     % x = sin(3*2*pi*t/T)*cos(2*pi*t/T);
     % y = sin(3*2*pi*t/T)*sin(2*pi*t/T);
 
-    % ２班　鈴木亮大　2312055
-    x = cos(2*pi/T*t)*sin(pi/T*t);
-    y = sin(2*pi/T*t);
+    % % ２班　鈴木亮大　2312055
+    % x = cos(2*pi/T*t)*sin(pi/T*t);
+    % y = sin(2*pi/T*t);
+
     ref = @(t) [x_0+x;y_0+y;z_0;0];
 end
 
