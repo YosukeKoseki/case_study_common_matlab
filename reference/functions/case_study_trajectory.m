@@ -46,17 +46,20 @@ end
     % y = 0.6*sin(t/T)-0.1*sin(6*t/T);
 
     % 2班　平児玉裕翔　2312092
-    T = 20; % 周期T=10だと早すぎるかも…
-    x = sin(3*2*pi*t/T)*cos(2*pi*t/T);
-    y = sin(3*2*pi*t/T)*sin(2*pi*t/T);
+    % T = 20; % 周期T=10だと早すぎるかも…
+    % x = sin(3*2*pi*t/T)*cos(2*pi*t/T);
+    % y = sin(3*2*pi*t/T)*sin(2*pi*t/T);
 
     % % ２班　鈴木亮大　2312055
+    % T=15;
     % x = cos(2*pi/T*t)*sin(pi/T*t);
     % y = sin(2*pi/T*t);
 
     % 2班　栗山優生　2312035
-    % x=sin(3*pi*t/T)*cos(5*pi*t/T);
-    % y=sin(3*pi*t/T)*sin(5*pi*t*T);
+    T=20;
+    x=sin(3*pi*t/T)*cos(5*pi*t/T);
+    y=sin(3*pi*t/T)*sin(5*pi*t/T);
+
     ref = @(t) [x_0+x;y_0+y;z_0;0];
 end
 
