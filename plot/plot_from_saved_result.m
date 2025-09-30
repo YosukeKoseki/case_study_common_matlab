@@ -37,7 +37,7 @@ logger = LOGGER(fullpath);
 %% プロット
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fsave = 0;
+fsave = 2;
 % [Recomendation] Initially, you should check the figure with fsave = 0, then chose save style.
 % [推奨] 最初はfsave = 0でfigureを確認し，その後 保存形式を選択
 % 0:no save
@@ -51,7 +51,7 @@ ftitle = 0; % defalt=1 -> グラフタイトルあり
 settings.fcolor = 0; % default=1 -> フェーズごとの背景色あり
 
 %%%%%%%%%%%%%%%%%%%%%%%% chose target %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-settings.target = ["p", "q", "v", "w", "input", "p1-p2", "p1-p2-p3"];
+settings.target = ["p", "q", "v", "w", "input", "p1-p2"];
 % settings.target = ["input", "inner_input1:4"];
 % プロットしたいグラフの情報                                        %
 % p: position    q: angle    v: velocity    w: angular velocity     %
@@ -66,7 +66,7 @@ settings.linewidth = 1.5;    % default=0.5 オススメ=1.5
 settings.agent_id = 1;
 
 settings.savefolder = 'plot/fig/';  % default
-% settings.savename = '';
+settings.savename = '0_Koseki';
 
 % estimator, sensor, reference, (plant) どの値を表示するかは
 % 途中のキーボード入力で決定します．
