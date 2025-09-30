@@ -66,7 +66,7 @@ settings.linewidth = 1.5;    % default=0.5 オススメ=1.5
 settings.agent_id = 1;
 
 settings.savefolder = 'plot/fig/';  % default
-% settings.savename = '';
+settings.savename = '';
 
 % estimator, sensor, reference, (plant) どの値を表示するかは
 % 途中のキーボード入力で決定します．
