@@ -105,6 +105,15 @@ classdef LOGGER < handle % handleクラスにしないとmethodの中で値を�
                 obj.agent_items = agent_items;
                 obj.Data.agent = struct();
             end
+            if obj.fExp == 1
+                if ~isfolder("Data/Exp_data")
+                    mkdir("Data/Exp_data");
+                end
+            else
+                if ~isfolder("Data/Sim_data")
+                    mkdir("Data/Sim_data");
+                end
+            end
 
         end
 
