@@ -54,6 +54,9 @@ end
     % x = cos(2*pi/T*t)*sin(pi/T*t);
     % y = sin(2*pi/T*t);
 
+    % 2班　栗山優生　2312035
+    % x=sin(3*pi*t/T)*cos(5*pi*t/T);
+    % y=sin(3*pi*t/T)*sin(5*pi*t*T);
     ref = @(t) [x_0+x;y_0+y;z_0;0];
 end
 
