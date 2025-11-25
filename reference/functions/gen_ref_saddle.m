@@ -3,7 +3,7 @@ arguments
     param.freq = 10% 周期
     param.orig = [0 0 1]% サドルの中心
     param.size = [1 1 0] % 各軸の振幅
-    param.phase = -pi % 位相    
+    param.phase = 0 % 位相    
 end
 
 T = param.freq;
@@ -20,8 +20,8 @@ lz = scale(3);% 1;
 lz_offset=origin(3);% 1;
 w = 2*pi/T; % T秒で一周
 
-ref=@(t) [lx*cos(w*t + phase)+lx_offset; % x
-ly*sin(w*t + phase)+ly_offset; % y
+ref=@(t) [lx*sin(w*t + phase)+lx_offset; % x
+ly*cos(w*t + phase)+ly_offset; % y
 lz*sin(2*w*t + phase/2)+lz_offset; % z
 0];%
 ddx = diff(ref,t,2);
