@@ -35,6 +35,7 @@ fullpath = fullfile(pathname, filename);
 logger = LOGGER(fullpath);
 
 %% プロット
+clearvars -except logger filename
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fsave = 0;
@@ -52,27 +53,31 @@ settings.fcolor = 0; % default=1 -> フェーズごとの背景色あり
 
 %%%%%%%%%%%%%%%%%%%%%%%% chose target %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 settings.target = ["p", "q", "v", "w", "input", "p1-p2", "p1-p2-p3"];
+% settings.target = ["p", "p1-p2"];
 % settings.target = ["input", "inner_input1:4"];
-settings.target = ["p", "q", "p1-p2"];
+
 % プロットしたいグラフの情報                                        %
 % p: position    q: angle    v: velocity    w: angular velocity     %
 % input: controller input    inner_input1:4: transmitter input      %
 % p1-p2: x-y 2D plot    p1-p2-p3: x-y-z 3D plot                     %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-settings.phase = "tfl";
-% settings.phase = "f";
+% settings.phase = "tfl";
+settings.phase = "f";
 settings.fontsize = 18;    % default=11 オススメ=18
+% settings.fontsize = 22;    % 報告書向け
+% settings.fontsize = 24;    % スライド向け
 settings.linewidth = 1.5;    % default=0.5 オススメ=1.5
 settings.agent_id = 1;
 
-settings.savefolder = 'plot/fig/';  % default
-settings.savename = '';
+settings.savefolder = 'plot/fig';  % default
+% settings.savename = 'お好きなもので';
 
 % estimator, sensor, reference, (plant) どの値を表示するかは
 % 途中のキーボード入力で決定します．
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 if logger.fExp == 1
     settings.attribute = ["e", "s", "r"];
@@ -88,7 +93,7 @@ for i=1:length(settings.target)
             tmp = settings.attribute;
             att = select_attribute(settings.target(i), tmp);
         case "q"
-            ylabel = "Attitude [rad]";
+            ylabel = "Angle [rad]";
             tmp = settings.attribute;
             tmp(3) = []; % "esr"の内，無いものを消去
             att = select_attribute(settings.target(i), tmp);
@@ -114,7 +119,7 @@ for i=1:length(settings.target)
             tmp = "";
             att = "";
         case "inner_input1:4"
-            ylabel = "Transmitter input [Nm], [N]";
+            ylabel = "Transmitter input [N], [Nm]";
             tmp = settings.attribute;
             tmp(:) = [];
             tmp = "";
@@ -132,6 +137,24 @@ for i=1:length(settings.target)
             tmp = settings.attribute;
             fcolor = 0;
             att = select_attribute(settings.target(i), tmp);
+        otherwise
+            if contains(settings.target(i), 'input') % "input"が入っていたら
+                if contains(settings.target(i), 'delta_input') % MEC用
+                    if contains(settings.target(i), '2:4'), ylabel = "Compensation torque input [Nm]";
+                    else                                  , ylabel = "Compensation input [N] [Nm]"; end
+                elseif contains(settings.target(i), 'nominal_input') % MECのノミナル入力用
+                    if contains(settings.target(i), '2:4'), ylabel = "Nominal torque input [Nm]";
+                    else                                  , ylabel = "Nominal input [N] [Nm]"; end
+                else % 知らない"input"用
+                    if contains(settings.target(i), '2:4'), ylabel = "Torque input [Nm]";
+                    else                                  , ylabel = "Input [N] [Nm]"; end
+                end
+                tmp = "";
+                att = "";
+            else % 例外来たらこれ↓
+                tmp = settings.attribute;
+                att = select_attribute(settings.target(i), tmp);
+            end
     end
     logger.plot({settings.agent_id, settings.target(i), att}, ...
         'fig_num',i, 'color',fcolor, "phase",settings.phase, ...
@@ -146,21 +169,25 @@ for i=1:length(settings.target)
         case "p1-p2"
             set(ax.XLabel, 'String', xlabel, 'Interpreter','latex')
             set(ax.YLabel, 'String', ylabel, 'Interpreter','latex')
-            data = logger.data(1,"p","e","phase",settings.phase);
+            est_data = logger.data(1,"p","e","phase",settings.phase);
+            ref_data = logger.data(1,"p","r","phase",settings.phase);
+            data = [est_data;ref_data];
             xlim([min(data(:,1)) max(data(:,1))])
             ylim([min(data(:,2)) max(data(:,2))])
         case "p1-p2-p3"
             set(ax.XLabel, 'String', xlabel, 'Interpreter','latex')
             set(ax.YLabel, 'String', ylabel, 'Interpreter','latex')
             set(ax.ZLabel, 'String', zlabel, 'Interpreter','latex')
-            data = logger.data(1,"p","e","phase",settings.phase);
+            est_data = logger.data(1,"p","e","phase",settings.phase);
+            ref_data = logger.data(1,"p","r","phase",settings.phase);
+            data = [est_data;ref_data];
             xlim([min(data(:,1)) max(data(:,1))])
             ylim([min(data(:,2)) max(data(:,2))])
             zlim([min(data(:,3)) max(data(:,3))])
         case "inner_input1:4"
             set(ax.YLabel, 'String', ylabel, 'Interpreter','latex')
-            legend = set_legend(settings.target(i), chars);
-            set(ax.Legend, 'String', legend, 'Interpreter','latex');
+            plegend = set_legend(settings.target(i), chars);
+            set(ax.Legend, 'String', plegend, 'Interpreter','latex');
             data = logger.data(1,settings.target(i),"","phase",settings.phase);
             y_min=0;
             y_max=0;
@@ -169,18 +196,52 @@ for i=1:length(settings.target)
                 if y_max<max(data(:,j)), y_max=max(data(:,j)); end
             end
             ylim([y_min y_max])
-        otherwise
+        case "p"
             set(ax.YLabel, 'String', ylabel, 'Interpreter','latex')
-            legend = set_legend(settings.target(i), chars);
-            set(ax.Legend, 'String', legend, 'Interpreter','latex');
-            data = logger.data(1,settings.target(i),"e","phase",settings.phase);
+            plegend = set_legend(settings.target(i), chars);
+            set(ax.Legend, 'String', plegend, 'Interpreter','latex');
+            est_data = logger.data(1,settings.target(i),"e","phase",settings.phase);
+            ref_data = logger.data(1,settings.target(i),"r","phase",settings.phase);
+            data = [est_data;ref_data];
             y_min=0;
             y_max=0;
-            for j=1:size(data,2)
+            for j=1:size(est_data,2)
                 if y_min>min(data(:,j)), y_min=min(data(:,j)); end
                 if y_max<max(data(:,j)), y_max=max(data(:,j)); end
             end
             ylim([y_min y_max])
+        otherwise
+            if contains(settings.target(i), '2:4') % target = "input2:4"用
+                set(ax.YLabel, 'String', ylabel, 'Interpreter','latex')
+                plegend = set_legend(settings.target(i), chars);
+                set(ax.Legend, 'String', plegend, 'Interpreter','latex');
+                h = findobj(ax, 'Type', 'line');
+                set(h(1), 'Color', [0.4940, 0.1840, 0.5560]) % デフォルト紫
+                set(h(2), 'Color', [0.9290, 0.6940, 0.1250]) % デフォルト黄色
+                set(h(3), 'Color', [0.8500, 0.3250, 0.0980]) % デフォルト赤　　なぜか順番は逆
+                data = logger.data(1,settings.target(i),"e","phase",settings.phase);
+                y_min=0;
+                y_max=0;
+                for j=1:size(data,2)
+                    if y_min>min(data(:,j)), y_min=min(data(:,j)); end
+                    if y_max<max(data(:,j)), y_max=max(data(:,j)); end
+                end
+                if y_min==y_max, y_max=y_max+1; end
+                ylim([y_min y_max])
+            else
+                set(ax.YLabel, 'String', ylabel, 'Interpreter','latex')
+                plegend = set_legend(settings.target(i), chars);
+                set(ax.Legend, 'String', plegend, 'Interpreter','latex');
+                data = logger.data(1,settings.target(i),"e","phase",settings.phase);
+                y_min=0;
+                y_max=0;
+                for j=1:size(data,2)
+                    if y_min>min(data(:,j)), y_min=min(data(:,j)); end
+                    if y_max<max(data(:,j)), y_max=max(data(:,j)); end
+                end
+                if y_min==y_max, y_max=y_max+0.000000001; end
+                ylim([y_min y_max])
+            end
     end
     if ftitle == 0
         set(ax.Title, 'String', [])
@@ -190,25 +251,51 @@ for i=1:length(settings.target)
     if ~exist('plot/fig', 'dir')
         mkdir('plot/fig')
     end
-    if settings.savename==1
-        if fsave == 1, savefig([settings.savefolder, erase(filename, '.mat'), '_', erase(char(settings.target(i)),':'), '.fig']);
-        elseif fsave == 2, saveas(fig, [settings.savefolder, erase(filename, '.mat'), '_', erase(char(settings.target(i)),':'), '.png']);
-        elseif fsave == 3, saveas(fig, [settings.savefolder, erase(filename, '.mat'), '_', erase(char(settings.target(i)),':'), '.jpg']);
-        elseif fsave == 4, saveas(fig, [settings.savefolder, erase(filename, '.mat'), '_', erase(char(settings.target(i)),':'), '.pdf']);
-        elseif fsave == 5, saveas(fig, [settings.savefolder, erase(filename, '.mat'), '_', erase(char(settings.target(i)),':'), '.eps'],'epsc2');
+    figname_att = erase(char(settings.target(i)),':');
+    start_idx = 0; % 初期化
+    start_idx = strfind(figname_att, 'result.');
+    if ~isempty(start_idx)
+        % target="~~.result.~~"があったらresult.を含めてその前を削除
+        end_of_match = start_idx + length('result.');
+        figname_att = figname_att(end_of_match:end);
+    end
+    if isfield(settings, 'savename') && (ischar(settings.savename) || isstring(settings.savename)) % settings.savenameの存在確認
+        if fsave==1,    filename_cell = {settings.savefolder, '\', settings.savename, '_', figname_att, '.fig'};
+        elseif fsave==2,filename_cell = {settings.savefolder, '\', settings.savename, '_', figname_att, '.png'};
+        elseif fsave==3,filename_cell = {settings.savefolder, '\', settings.savename, '_', figname_att, '.jpg'};
+        elseif fsave==4,filename_cell = {settings.savefolder, '\', settings.savename, '_', figname_att, '.pdf'};
+        elseif fsave==5,filename_cell = {settings.savefolder, '\', settings.savename, '_', figname_att, '.eps'};
+        else,           filename_cell = {""};
+        end % ファイルのフルパスをcell配列化
+        string_cell     = cellfun(@string, filename_cell, 'UniformOutput', false);
+        string_array    = [string_cell{:}];
+        str             = strjoin(string_array,''); % str型に変更
+        if fsave==1
+            savefig(str);
+        elseif fsave==2 || fsave==3 || fsave==4 || fsave==5
+            exportgraphics(fig, str);
         end
     else
-        if fsave == 1, savefig([settings.savefolder, settings.savename, '_', erase(char(settings.target(i)),':'), '.fig']);
-        elseif fsave == 2, saveas(fig, [settings.savefolder, settings.savename, '_', erase(char(settings.target(i)),':'), '.png']);
-        elseif fsave == 3, saveas(fig, [settings.savefolder, settings.savename, '_', erase(char(settings.target(i)),':'), '.jpg']);
-        elseif fsave == 4, saveas(fig, [settings.savefolder, settings.savename, '_', erase(char(settings.target(i)),':'), '.pdf']);
-        elseif fsave == 5, saveas(fig, [settings.savefolder, settings.savename, '_', erase(char(settings.target(i)),':'), '.eps'],'epsc2');
+        if fsave==1,    filename_cell = {settings.savefolder, '\', erase(filename, '.mat'), '_', figname_att, '.fig'};
+        elseif fsave==2,filename_cell = {settings.savefolder, '\', erase(filename, '.mat'), '_', figname_att, '.png'};
+        elseif fsave==3,filename_cell = {settings.savefolder, '\', erase(filename, '.mat'), '_', figname_att, '.jpg'};
+        elseif fsave==4,filename_cell = {settings.savefolder, '\', erase(filename, '.mat'), '_', figname_att, '.pdf'};
+        elseif fsave==5,filename_cell = {settings.savefolder, '\', erase(filename, '.mat'), '_', figname_att, '.eps'};
+        else,           filename_cell = {""};
+        end
+        string_cell     = cellfun(@string, filename_cell, 'UniformOutput', false);
+        string_array    = [string_cell{:}];
+        str             = strjoin(string_array,'');
+        if fsave==1
+            savefig(str);
+        elseif fsave==2 || fsave==3 || fsave==4 || fsave==5
+            exportgraphics(fig, str);
         end
     end
 end
 disp_rmse(logger,settings.phase)
 
-% % functions
+%% Local functions
 function att = select_attribute(target, attribute)
 text = cell(1, 4);
 text{1} = ['\n<キーボードで「', char(target), '」用の値の種類を入力>\n'];%'\n<Keybord input attribute for [', char(target), ']>\n', 
@@ -243,7 +330,7 @@ end
 
 function legend = set_legend(target, chars)
 att_map = containers.Map({'e', 's', 'r', 'p'},...
-    {'est.', 'sen.', 'ref.', 'pla.'});
+    {'est.', 'sen.', 'ref.', 'true'});
 legend_num = numel(chars) * 3;
 legend = cell(1, legend_num);
 switch target
@@ -276,11 +363,40 @@ switch target
         legend{2} = "$u_{roll}$";
         legend{3} = "$u_{pitch}$";
         legend{4} = "$u_{yaw}$";
+    case "input2:4"
+        legend{1} = "$u_{roll}$";
+        legend{2} = "$u_{pitch}$";
+        legend{3} = "$u_{yaw}$";
     case "inner_input1:4"
         legend{1} = "$u_{roll}$";
         legend{2} = "$u_{pitch}$";
         legend{3} = "$u_{thrust}$";
         legend{4} = "$u_{yaw}$";
+    otherwise
+        for i=1:legend_num, legend{i} = string(i); end % 例外が入ってきたら適当に入れる
+        if contains(target, 'delta_input') % MEC用
+            if contains(target, '2:4')
+                legend{1} = "$\Delta u_{roll}$";
+                legend{2} = "$\Delta u_{pitch}$";
+                legend{3} = "$\Delta u_{yaw}$";
+            else
+                legend{1} = "$\Delta u_{thrust}$";
+                legend{2} = "$\Delta u_{roll}$";
+                legend{3} = "$\Delta u_{pitch}$";
+                legend{4} = "$\Delta u_{yaw}$";
+            end
+        elseif contains(target, 'nominal_input') % MECのノミナル入力用
+            if contains(target, '2:4')
+                legend{1} = "$u_{n,roll}$";
+                legend{2} = "$u_{n,pitch}$";
+                legend{3} = "$u_{n,yaw}$";
+            else
+                legend{1} = "$u_{n,thrust}$";
+                legend{2} = "$u_{n,roll}$";
+                legend{3} = "$u_{n,pitch}$";
+                legend{4} = "$u_{n,yaw}$";
+            end
+        end
 end
 end
 
