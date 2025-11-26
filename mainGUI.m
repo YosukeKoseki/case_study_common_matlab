@@ -25,7 +25,7 @@ Setting.PInterval = 0.6; % sec : poling interval for emergency stop
 
 % Setting.mode = ExpBaseMode(4); % ExpHL
 
-Setting.mode = SimBaseMode(12); % SimHL
+Setting.mode = SimBaseMode(12); % SimMPC_Koopman
 
 if contains(Setting.mode,"Exp")
     Setting.fExp = 1;
