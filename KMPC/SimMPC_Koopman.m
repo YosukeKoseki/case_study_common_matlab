@@ -20,7 +20,7 @@ agent.reference.time_var= TIME_VARYING_REFERENCE(agent,{"gen_ref_saddle",{"freq"
 %2つのコントローラの設定---------------------------------------------------------------------------------------------------
 agent.controller.hlc = HLC(agent,Controller_HL(dt));
 agent.controller.kmpc = MPC_CONTROLLER_K(agent,Controller_MPC_K(dt,model_file,agent));
-run("SimBase");
+run("ExpBase");
 agent.cha_allocation.reference = "time_var";
 agent.cha_allocation.controller = "hlc";
 agent.cha_allocation.f.controller = ["kmpc"];
