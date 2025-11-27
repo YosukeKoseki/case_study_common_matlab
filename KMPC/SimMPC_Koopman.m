@@ -16,14 +16,16 @@ agent.plant = MODEL_CLASS(agent,Model_EulerAngle(dt, initial_state, 1));
 agent.parameter = DRONE_PARAM("DIATONE");
 agent.estimator = EKF(agent, Estimator_EKF(agent,dt,MODEL_CLASS(agent,Model_EulerAngle(dt, initial_state, 1)),["p", "q"]));
 agent.sensor = MOTIVE(agent, Sensor_Motive(1,0, motive));
-agent.reference.time_var= TIME_VARYING_REFERENCE(agent,{"gen_ref_saddle",{"freq",8,"orig",[0;0;0.6],"size",[0,0,0]},"HL"});
+% agent.reference.time_var = TIME_VARYING_REFERENCE(agent,{"gen_ref_saddle",{"freq",10,"orig",[0;0;1.0],"size",[1,1,0.3]},"HL"});
+% agent.reference.time_var= TIME_VARYING_REFERENCE(agent,{"gen_ref_saddle",{"freq",8,"orig",[0;0;0.6],"size",[0,0,0]},"HL"});
+agent.reference.time_var = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",5,"init",[0;0;1],"radius",1.0},"HL"});
 %2つのコントローラの設定---------------------------------------------------------------------------------------------------
 agent.controller.hlc = HLC(agent,Controller_HL(dt));
 agent.controller.kmpc = MPC_CONTROLLER_K(agent,Controller_MPC_K(dt,model_file,agent));
 run("ExpBase");
 agent.cha_allocation.reference = "time_var";
 agent.cha_allocation.controller = "hlc";
-agent.cha_allocation.f.controller = ["kmpc"];
+agent.cha_allocation.f.controller = "kmpc";
 function post(app)
 app.logger.plot({1, "p", "er"},"ax",app.UIAxes,"xrange",[app.time.ts,app.time.te]);
 % app.logger.plot({1, "inner_input", ""}, "fig_num", 1,"xrange",[app.time.ts,app.time.te]);
