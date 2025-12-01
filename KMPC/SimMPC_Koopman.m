@@ -34,6 +34,6 @@ app.logger.plot({1, "input", ""},"fig_num", 2,"xrange",[app.time.ts,app.time.te]
 app.logger.plot({1, "v", "er"}, "fig_num", 3,"xrange",[app.time.ts,app.time.te]);
  app.logger.plot({1, "p1-p2-p3", "er"},"fig_num", 4,"phase",'tfl', "color",0);
 % app.logger.plot({1, "inner_input", ""},"ax",app.UIAxes6,"xrange",[app.time.ts,app.time.te]);
-% app.logger.plot({1, "controller.result.input_kmpc", ""}, "fig_num", 4);
-% app.logger.plot({1, "controller.result.hlc", ""},{1, "controller.result.kmpc", ""},"fig_num", 4,"phase","f");
+app.logger.plot({1, "controller.result.input_kmpc", ""}, "fig_num", 5,"phase",'f',"color",0);
+% app.logger.plot({1, "controller.result.hlc", ""},{1, "controller.result.kmpc", ""},"fig_num", 6,"phase","f");
 end
