@@ -35,11 +35,11 @@ function Controller = Controller_MPC_K(dt, model_file, agent)
     [Controller.F, Controller.code] = select_observable(model_file);
    
     %% sim用　重み かなり難しい
-    Controller.weight.P = diag([20;1;30]);    % 位置　10,20刻み  20;1;30
-    Controller.weight.Q = diag([60;20;1]);    % 姿勢角15良い気がする
-    Controller.weight.V = diag([10;1;1]);% 速度  10,20刻み  30;20;10
-    Controller.weight.W = diag([1;1;1]);  %角速度　1,2刻み 
-    Controller.weight.R = diag([1; 1; 1; 1]); % 入力
+    Controller.weight.P = diag([80;80;100]);    % 位置　10,20刻み  20;1;30
+    Controller.weight.Q = diag([150;150;250]);    % 姿勢角15良い気がする
+    Controller.weight.V = 20*diag([2;2;2]);% 速度  10,20刻み  30;20;10
+    Controller.weight.W = 100*diag([0.1;0.1;0.1]);  %角速度　1,2刻み 
+    Controller.weight.R = diag([2; 10; 10; 15]); % 入力
     Controller.weight.RP =0*diag([40; 20; 20; 20]);  % 1ステップ前の入力との差    0*(無効化)
     %%　実験用　重み
     % Controller.weight.P = 1.3*diag([300;300;500]);    % 位置　10,20刻み  20;1;30
