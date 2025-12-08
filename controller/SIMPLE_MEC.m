@@ -6,7 +6,7 @@ classdef SIMPLE_MEC < handle
     properties
         self
         result
-        param
+        physical_param
         parameter_name = ["mass", "Lx", "Ly", "lx", "ly", "jx", "jy", "jz", "gravity", "km1", "km2", "km3", "km4", "k1", "k2", "k3", "k4"];
         D_thrust    % Δu_thrust補償ゲイン
         D_roll      % Δu_roll補償ゲイン
@@ -17,30 +17,23 @@ classdef SIMPLE_MEC < handle
     end
     
     methods
-        function obj = SIMPLE_MEC(self)
+        function obj = SIMPLE_MEC(self, param)
             obj.self = self;
-            obj.param = self.parameter.get(obj.parameter_name);
+            obj.physical_param = self.parameter.get(obj.parameter_name);
             obj.result.nominal_p = zeros(3,1);
             obj.result.nominal_q = zeros(3,1);
             obj.result.nominal_v = zeros(3,1);
             obj.result.nominal_w = zeros(3,1);
-            obj.result.nominal_input = zeros(self.estimator.model.dim(2),1);
-            obj.result.delta_input = zeros(self.estimator.model.dim(2),1);
-            obj.result.input = zeros(self.estimator.model.dim(2),1);
+            obj.result.nominal_input= zeros(self.estimator.model.dim(2),1);
+            obj.result.delta_input  = zeros(self.estimator.model.dim(2),1);
+            obj.result.input        = zeros(self.estimator.model.dim(2),1);
             obj.x_pre = self.estimator.result.state.get;
             obj.pre_input = zeros(self.estimator.model.dim(2),1);
 
-            %-%-%-% 補償ゲイン設計 %-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%
-            % obj.D_thrust = [1, 1];
-            % obj.D_roll = [1, 1, 1, 1];
-            % obj.D_pitch = [1, 1, 1, 1];
-            % obj.D_thrust = [400, 20];
-            % obj.D_roll = [400, 20, 10, 2];
-            % obj.D_pitch = [400, 20, 10, 2];
-            obj.D_thrust = [100, 20];
-            obj.D_roll = [100, 20, 5, 1];
-            obj.D_pitch = [100, 20, 5, 1];
-            obj.D_yaw = [1, 1];
+            obj.D_thrust    = param.D_turust;
+            obj.D_roll      = param.D_roll;
+            obj.D_pitch     = param.D_pitch;
+            obj.D_yaw       = param.D_yaw;
         end
         
         function result = do(obj, varargin)
@@ -51,7 +44,7 @@ classdef SIMPLE_MEC < handle
                 obj.x_pre = varargin{3}.Data.agent.estimator.result{end}.state.get; % LOGGERから前時刻の状態を取得
             end
             dt = varargin{1}.dt;
-            dx = roll_pitch_yaw_thrust_torque_physical_parameter_model(obj.x_pre, obj.pre_input, obj.param);
+            dx = roll_pitch_yaw_thrust_torque_physical_parameter_model(obj.x_pre, obj.pre_input, obj.physical_param);
             x_nominal = obj.x_pre + dx*dt;
             %-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%
             obj.result.nominal_p = x_nominal(1:3);
@@ -64,6 +57,7 @@ classdef SIMPLE_MEC < handle
 
 
             z = x_plant - x_nominal; % [p; q; v; w]
+            
             du_thrust = obj.D_thrust*[z(3); z(9)];              % p_z; v_z
             du_roll = obj.D_roll*[z(2); z(8); z(4); z(10)];     % p_y; v_y; θ_roll; ω_roll
             du_pitch = obj.D_pitch*[z(1); z(7); z(5); z(11)];   % p_x; v_x; θ_pitch; ω_pitch
