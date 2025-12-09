@@ -146,7 +146,7 @@ classdef HLC_SIMPLE_MEC_koseki < handle
             obj.result.zthree_n = z3_n;
             obj.result.zfour_n = z4_n;
             obj.result.nominal_input_HL = [vf_n(1); vs_n'];
-            obj.result.delta_input_HL   = [dv_z1; dv_z2; dv_z3; dv_z4];
+            obj.result.delta_input_HL   = -1*[dv_z1; dv_z2; dv_z3; dv_z4];
             obj.result.input_HL         = [vf_a(1); vs_a'];
             % disp([ref.state.p', obj.result.delta_input_HL'])
             disp([model.state.p', (obj.result.input - obj.result.nominal_input)'])

@@ -9,9 +9,9 @@ Controller.D_yaw    = [1, 1];
 
 
 % ↓HLで線形化した各サブシステムに適用する方
-Controller.D_z1 = [800, 20];
-Controller.D_z2 = [100, 20, 5, 30];
-Controller.D_z3 = [100, 20, 5, 30];
+Controller.D_z1 = [900, 20];
+Controller.D_z2 = [500, 100, 40, 40];
+Controller.D_z3 = [500, 100, 40, 40];
 Controller.D_z4 = [1, 1];
 
 % Controller.D_z1 = [1, 1];
