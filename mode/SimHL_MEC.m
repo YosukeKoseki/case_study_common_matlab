@@ -46,7 +46,7 @@ agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"
 
 run("ExpBase");
 agent.cha_allocation.reference = "time_varying";
-agent.controller = HLC_SIMPLE_MEC(agent, Controller_SIMPLE_MEC(dt), Controller_HL(dt));
+agent.controller = HLC_SIMPLE_MEC_koseki(agent, Controller_SIMPLE_MEC(dt), Controller_HL(dt));
 motive.getData(agent);
 
 function dfunc(app)
