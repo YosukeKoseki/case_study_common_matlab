@@ -18,11 +18,13 @@ methods
         obj.result.input = zeros(self.estimator.model.dim(2),1);
         obj.Vf = obj.param.Vf; % 階層１の入力を生成する関数ハンドル
         obj.Vs = obj.param.Vs; % 階層２の入力を生成する関数ハンドル
+        disp('目標軌道:x, y, zを表示します')
     end
 
     function result = do(obj,varargin)
         model = obj.self.estimator.result;
         ref = obj.self.reference.result;
+        disp(ref.state.p');
         xd = ref.state.xd;
         P = obj.param.P;
         F1 = obj.param.F1;
