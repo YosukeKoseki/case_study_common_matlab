@@ -35,19 +35,23 @@ agent.plant = MODEL_CLASS(agent,Model_Quat13(dt, initial_state, 1)); % Model_Qua
 
 % ↓パラメータの上書き モデル誤差をプラントに与える
 agent.plant.param(1) = 0.7875; % ５％増->0.7875, ５％減->0.7125
-agent.plant.param(6) = 0.24; % 0.18<jx,jy<0.22ぐらいが良き frequency=5の時
-agent.plant.param(7) = 0.24; % 同上
+agent.plant.param(6) = 0.15; % 0.18<jx,jy<0.22ぐらいが良き frequency=5の時
+agent.plant.param(7) = 0.15; % 同上
 % 2~5,10~18はagent.plant.method='@roll_pitch_yaw_thrust_torque_physical_parameter_model'を使っている限り意味が無い
 %===================================================================================================================================================
 agent.estimator = EKF(agent, Estimator_EKF(agent,dt,MODEL_CLASS(agent,Model_EulerAngle(dt, initial_state, 1)),["p", "q"]));
 agent.sensor = MOTIVE(agent, Sensor_Motive(1,0, motive));
-agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",5,"init",[0;0;1],"radius",1.0},"HL"});
+% agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",5,"init",[0;0;1],"radius",1.0},"HL"});
+agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",5,"init",[1;1;1],"radius",0},"HL"});
 
 run("ExpBase");
 agent.cha_allocation.reference = "time_varying";
-agent.controller.nominal = HLC(agent,Controller_HL(dt));
-agent.controller.mec = SIMPLE_MEC(agent, Controller_SIMPLE_MEC());
-agent.cha_allocation.controller = ["nominal","mec"]; % cha_allocationにコントローラー登録
+% agent.controller.nominal= HLC(agent,Controller_HL(dt));
+% agent.controller.mec    = SIMPLE_MEC(agent, Controller_SIMPLE_MEC(dt));
+% agent.cha_allocation.controller = ["nominal","mec"]; % cha_allocationにコントローラー登録
+
+agent.controller = HLC_SIMPLE_MEC(agent, Controller_SIMPLE_MEC(dt), Controller_HL(dt));
+% agent.controller = HLC(agent,Controller_HL(dt));
 motive.getData(agent);
 
 function dfunc(app)
@@ -55,6 +59,7 @@ LW = 1.5; % Linewidth
 FS = 20; % Fontsize
 phase = "tfl";
 % phase = "f";
+% phase = "t";
 app.logger.plot({1, "p", "er"},"ax",app.UIAxes,"phase",phase, "Linewidth",LW, "Fontsize",FS);
 % app.logger.plot({{1, "p", "er"}, {1, "controller.result.nominal_p", ""}},"phase",phase, "fig_num",1, "Linewidth",LW, "Fontsize",FS); % 位置: p_x,p_y,p_z
 % app.logger.plot({{1, "q", "e"}, {1, "controller.result.nominal_q", ""}}, "phase",phase, "fig_num",2, "Linewidth",LW, "Fontsize",FS); % 角度: θ_roll, θ_pitch, θ_yaw
@@ -63,7 +68,7 @@ app.logger.plot({1, "p", "er"},"ax",app.UIAxes,"phase",phase, "Linewidth",LW, "F
 % app.logger.plot({1, "input", ""}, "phase",phase, "fig_num",6, "Linewidth",LW, "Fontsize",24); % 制御入力: Thrust, roll, pitch, yaw
 % app.logger.plot({1, "controller.result.delta_input", ""}, "phase",phase, "fig_num",7, "Linewidth",LW, "Fontsize",24);
 
-app.logger.plot({1, "p1-p2", "er"}, "phase",phase, "color", 0, "fig_num",8, "Linewidth",LW, "Fontsize",FS); % x-y軌跡
+% app.logger.plot({1, "p1-p2", "er"}, "phase",phase, "color", 0, "fig_num",8, "Linewidth",LW, "Fontsize",FS); % x-y軌跡
 % app.logger.plot({1, "p1-p2-p3", "er"}, "phase",phase, "color", 0, "fig_num",9, "Linewidth",LW, "Fontsize",FS); % x-y-z軌跡
 
 
@@ -71,6 +76,12 @@ app.logger.plot({1, "p", "er"},"phase",phase, "fig_num",1, "Linewidth",LW, "Font
 app.logger.plot({1, "q", "e"}, "phase",phase, "fig_num",2, "Linewidth",LW, "Fontsize",FS); % 角度: θ_roll, θ_pitch, θ_yaw
 app.logger.plot({1, "v", "er"}, "phase",phase, "fig_num",3, "Linewidth",LW, "Fontsize",FS);% 速度: v_x, v_y, v_z
 app.logger.plot({1, "w", "e"}, "phase",phase, "fig_num",4, "Linewidth",LW, "Fontsize",FS); % 角速度: ω_roll, ω_ptich, ω_yaw
-app.logger.plot({1, "input", ""}, "phase",phase, "fig_num",6, "Linewidth",LW, "Fontsize",24); % 制御入力: Thrust, roll, pitch, yaw
-app.logger.plot({1, "controller.result.delta_input", ""}, "phase",phase, "fig_num",7, "Linewidth",LW, "Fontsize",24);
+app.logger.plot({1, "input", ""}, "phase",phase, "fig_num",6, "Linewidth",LW, "Fontsize",FS); % 制御入力: Thrust, roll, pitch, yaw
+app.logger.plot({1, "controller.result.input_HL", ""}, "phase",phase, "fig_num",10, "Linewidth",LW, "Fontsize",FS); % HL上での制御入力
+app.logger.plot({1, "controller.result.delta_input_HL", ""}, "phase",phase, "fig_num",11, "Linewidth",LW, "Fontsize",FS); % HL上での補償入力
+app.logger.plot({{1, "controller.result.nominal_input_HL2:4", ""}, {1, "controller.result.delta_input_HL2:4", ""}}, "phase",phase, "fig_num",12, "Linewidth",LW, "Fontsize",FS);
+app.logger.plot({{1, "controller.result.zone_p", ""},{1,"controller.result.zone_n", ""}}, "phase",phase, "fig_num",15, "Linewidth",LW, "Fontsize",FS);
+app.logger.plot({1, "controller.result.ztwo_p", ""}, "phase",phase, "fig_num",16, "Linewidth",LW, "Fontsize",FS);
+app.logger.plot({1, "controller.result.zthree_p", ""}, "phase",phase, "fig_num",17, "Linewidth",LW, "Fontsize",FS);
+app.logger.plot({1, "controller.result.zfour_p", ""}, "phase",phase, "fig_num",18, "Linewidth",LW, "Fontsize",FS);
 end

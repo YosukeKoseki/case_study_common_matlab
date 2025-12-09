@@ -30,7 +30,7 @@ classdef SIMPLE_MEC < handle
             obj.x_pre = self.estimator.result.state.get;
             obj.pre_input = zeros(self.estimator.model.dim(2),1);
 
-            obj.D_thrust    = param.D_turust;
+            obj.D_thrust    = param.D_thrust;
             obj.D_roll      = param.D_roll;
             obj.D_pitch     = param.D_pitch;
             obj.D_yaw       = param.D_yaw;
@@ -57,11 +57,11 @@ classdef SIMPLE_MEC < handle
 
 
             z = x_plant - x_nominal; % [p; q; v; w]
-            
-            du_thrust = obj.D_thrust*[z(3); z(9)];              % p_z; v_z
-            du_roll = obj.D_roll*[z(2); z(8); z(4); z(10)];     % p_y; v_y; θ_roll; ω_roll
-            du_pitch = obj.D_pitch*[z(1); z(7); z(5); z(11)];   % p_x; v_x; θ_pitch; ω_pitch
-            du_yaw = obj.D_yaw*[z(6); z(12)];                   % θ_yaw; ω_yaw
+
+            du_thrust   = obj.D_thrust  *[z(3); z(9)];              % p_z; v_z
+            du_roll     = obj.D_roll    *[z(2); z(8); z(4); z(10)];     % p_y; v_y; θ_roll; ω_roll
+            du_pitch    = obj.D_pitch   *[z(1); z(7); z(5); z(11)];   % p_x; v_x; θ_pitch; ω_pitch
+            du_yaw      = obj.D_yaw     *[z(6); z(12)];                   % θ_yaw; ω_yaw
             obj.result.delta_input = -1*[du_thrust; du_roll; du_pitch; du_yaw]; % 符号注意！！
             % obj.result.delta_input = [0;0;0;0];
 

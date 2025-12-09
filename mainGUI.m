@@ -27,7 +27,7 @@ Setting.PInterval = 0.6; % sec : poling interval for emergency stop
 % Setting.mode = ExpBaseMode(10); % ExpHL_MEC
 
 Setting.mode = SimBaseMode(3); % SimHL
-% Setting.mode = SimBaseMode(13); % SimHL_MEC
+Setting.mode = SimBaseMode(13); % SimHL_MEC
 if contains(Setting.mode,"Exp")
     Setting.fExp = 1;
 else
