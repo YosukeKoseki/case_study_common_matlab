@@ -12,7 +12,8 @@ initial_state.q = [1; 0; 0; 0];
 initial_state.v = [0; 0; 0];
 initial_state.w = [0; 0; 0];
 % model_file = '2025-10-08_exp_ob26_code00_randompp';
-model_file = 'KMPCsim.mat';
+% model_file = 'KMPCsim.mat';
+model_file = 'koopman_common_z_.mat';
 %%
 agent = DRONE;
 agent.plant = MODEL_CLASS(agent,Model_EulerAngle(dt, initial_state, 1));
