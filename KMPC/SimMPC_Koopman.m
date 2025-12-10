@@ -11,7 +11,7 @@ initial_state.p = arranged_position([0, 0], 1, 1, 0); % [x, y], 1, 1, z
 initial_state.q = [1; 0; 0; 0];
 initial_state.v = [0; 0; 0];
 initial_state.w = [0; 0; 0];
-model_file = '2025-10-08_exp_ob26_code00_randompp';%%%%%observer 1 なし
+model_file = '2025-10-08_exp_ob26_code00_randompp';
 %%
 agent = DRONE;
 agent.plant = MODEL_CLASS(agent,Model_EulerAngle(dt, initial_state, 1));
