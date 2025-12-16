@@ -8,8 +8,8 @@ function Controller = Controller_MPC_K(dt, model_file, agent)
     Controller.input_size = 4;
     Controller.total_size = Controller.state_size + Controller.input_size;
     Controller.Kmodel = model_file;
-    Controller.dt = 0.025;          % MPCステップ幅
-    Controller.H = 12;              %predict horizon
+    Controller.dt = 0.07;          % MPCステップ幅
+    Controller.H = 10;              %predict horizon
     Controller.particle_num = 50000;%mento carlo number of samples
     Controller.input.Maxinput = 1.5;
     Controller.input.Constinput = 10;
@@ -35,13 +35,21 @@ function Controller = Controller_MPC_K(dt, model_file, agent)
     [Controller.F, Controller.code] = select_observable(model_file);
    
     %% sim用　重み かなり難しい
-    Controller.weight.P = diag([70;70;100]);    % 位置　10,20刻み  20;1;30
-    Controller.weight.Q = diag([150;150;250]);    % 姿勢角15良い気がする
-    Controller.weight.V = diag([40;40;40]);% 速度  10,20刻み  30;20;10
-    Controller.weight.W = diag([10;10;10]);  %角速度　1,2刻み 
-    Controller.weight.R = diag([1; 1; 1; 1]); % 入力
+    % Controller.weight.P = diag([70;70;100]);    % 位置　10,20刻み  20;1;30
+    % Controller.weight.Q = diag([150;150;250]);    % 姿勢角15良い気がする
+    % Controller.weight.V = diag([40;40;40]);% 速度  10,20刻み  30;20;10
+    % Controller.weight.W = diag([10;10;10]);  %角速度　1,2刻み 
+    % Controller.weight.R = diag([1; 1; 1; 1]); % 入力
+    % Controller.weight.RP =0*diag([40; 20; 20; 20]);  % 1ステップ前の入力との差    0*(無効化)
+
+    %% sim用　去年のモデル
+    Controller.weight.P = diag([20;20;20]);    % 位置　10,20刻み  20;1;30
+    Controller.weight.Q = diag([15;15;15]);    % 姿勢角15良い気がする
+    Controller.weight.V = diag([10;10;10]);% 速度  10,20刻み  30;20;10
+    Controller.weight.W = diag([1;1;1]);  %角速度　1,2刻み 
+    Controller.weight.R = 0.1*diag([1; 1; 1; 1]); % 入力
     Controller.weight.RP =0*diag([40; 20; 20; 20]);  % 1ステップ前の入力との差    0*(無効化)
-    
+   
     %%　実験用　重み
     % Controller.weight.P = 1.3*diag([300;300;500]);    % 位置　10,20刻み  20;1;30
     % Controller.weight.Q = 1e3*diag([1;1;1]);    % 速度  10,20刻み  30;20;10
