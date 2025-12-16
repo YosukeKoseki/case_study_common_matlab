@@ -11,11 +11,10 @@ initial_state.p = arranged_position([0, 0], 1, 1, 0); % [x, y], 1, 1, z
 initial_state.q = [1; 0; 0; 0];
 initial_state.v = [0; 0; 0];
 initial_state.w = [0; 0; 0];
-model_file = '2025-10-08_exp_ob26_code00_randompp';
-% model_file = 'KMPCsim.mat';
-% model_file = 'koopman_common_z_.mat';
-% model_file = 'EstimationResult_12state_2_7_Exp_sprine+zsprine+P2Pz_torque_incon_150data_vzからz算出.mat';
-%%
+model_file = '2025-10-08_exp_ob26_code00_randompp';%発散しない12/16時点
+% model_file = 'KMPCsim.mat';%%Simデータで作成
+% model_file = 'koopman_common_z_.mat';%%MEC用
+% model_file = 'EstimationResult_12state_2_7_Exp_sprine+zsprine+P2Pz_torque_incon_150data_vzからz算出.mat';%%去年までの
 agent = DRONE;
 agent.plant = MODEL_CLASS(agent,Model_EulerAngle(dt, initial_state, 1));
 agent.parameter = DRONE_PARAM("DIATONE");
