@@ -35,18 +35,22 @@ agent.plant = MODEL_CLASS(agent,Model_Quat13(dt, initial_state, 1)); % Model_Qua
 
 % ↓パラメータの上書き モデル誤差をプラントに与える
 agent.plant.param(1) = 0.7875; % ５％増->0.7875, ５％減->0.7125
-agent.plant.param(6) = 0.12;
-agent.plant.param(7) = 0.12;
+% agent.plant.param(6) = 0.12;
+% agent.plant.param(7) = 0.12;
 % 2~5,10~18はagent.plant.method='@roll_pitch_yaw_thrust_torque_physical_parameter_model'を使っている限り意味が無い
 %===================================================================================================================================================
 agent.estimator = EKF(agent, Estimator_EKF(agent,dt,MODEL_CLASS(agent,Model_EulerAngle(dt, initial_state, 1)),["p", "q"]));
 agent.sensor = MOTIVE(agent, Sensor_Motive(1,0, motive));
- agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",5,"init",[0;0;1],"radius",1.0},"HL"});
-% agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",5,"init",[1;1;1],"radius",0},"HL"});
+agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",5,"init",[0;0;1],"radius",0},"HL"}); %原点でホバリング
+% agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",5,"init",[0;0;1],"radius",1.0},"HL"}); %円軌道
+% agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",5,"init",[1;1;1],"radius",0},"HL"}); %任意の点へP2P
 
 run("ExpBase");
 agent.cha_allocation.reference = "time_varying";
-agent.controller = HLC_SIMPLE_MEC_koseki(agent, Controller_SIMPLE_MEC(dt), Controller_HL(dt));
+% agent.controller = HLC_SIMPLE_MEC_koseki(agent, Controller_SIMPLE_MEC(dt), Controller_HL(dt));
+agent.controller.nominal = HLC(agent,Controller_HL(dt));
+agent.controller.mec = SIMPLE_MEC(agent, Controller_SIMPLE_MEC(dt));
+agent.cha_allocation.controller = ["nominal","mec"]; % cha_allocationにコントローラー登録
 motive.getData(agent);
 
 function dfunc(app)
@@ -63,7 +67,7 @@ app.logger.plot({1, "p", "er"},"ax",app.UIAxes,"phase",phase, "Linewidth",LW, "F
 % app.logger.plot({1, "input", ""}, "phase",phase, "fig_num",6, "Linewidth",LW, "Fontsize",24); % 制御入力: Thrust, roll, pitch, yaw
 % app.logger.plot({1, "controller.result.delta_input", ""}, "phase",phase, "fig_num",7, "Linewidth",LW, "Fontsize",24);
 
-app.logger.plot({1, "p1-p2", "er"}, "phase",phase, "color", 0, "fig_num",8, "Linewidth",LW, "Fontsize",FS); % x-y軌跡
+% app.logger.plot({1, "p1-p2", "er"}, "phase",phase, "color", 0, "fig_num",8, "Linewidth",LW, "Fontsize",FS); % x-y軌跡
 % app.logger.plot({1, "p1-p2-p3", "er"}, "phase",phase, "color", 0, "fig_num",9, "Linewidth",LW, "Fontsize",FS); % x-y-z軌跡
 
 

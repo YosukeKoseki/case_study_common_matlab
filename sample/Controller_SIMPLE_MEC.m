@@ -2,9 +2,9 @@ function Controller= Controller_SIMPLE_MEC(dt)
 % SIMPLE_MEC用補償ゲインの設定
 
 % ↓非線形モデルに直接適用する方
-Controller.D_thrust = [100, 20];
-Controller.D_roll   = [100, 20, 5, 1];
-Controller.D_pitch  = [100, 20, 5, 1];
+Controller.D_thrust = [1, 1];
+Controller.D_roll   = [1, 1, 1, 1];
+Controller.D_pitch  = [1, 1, 1, 1];
 Controller.D_yaw    = [1, 1];
 
 
