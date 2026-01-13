@@ -17,33 +17,31 @@ initial_state.w = [0; 0; 0];
 
 % % DRONEクラスの定義 % % % %
 agent = DRONE;
-agent.plant = DRONE_EXP_MODEL(agent,Model_Drone_Exp(dt, initial_state, "serial", "COM3")); % (Simと異なる部分)
+agent.plant = DRONE_EXP_MODEL(agent,Model_Drone_Exp(dt, initial_state, "serial", "COM4")); % (Simと異なる部分)
 agent.parameter = DRONE_PARAM("DIATONE");
 agent.estimator = EKF(agent, Estimator_EKF(agent,dt,MODEL_CLASS(agent,Model_EulerAngle(dt, initial_state, 1)),["p", "q"]));
 agent.sensor = MOTIVE(agent, Sensor_Motive(1,0, motive));
-agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",10,"init",[0;0;1],"radius",1.0},"HL"});
+agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",10,"init",[0;0;1],"radius",0},"HL"}); %原点でホバリング
+% agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",10,"init",[1;1;1],"radius",1.0},"HL"}); %円軌道
+% agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",10,"init",[1;1;1],"radius",0},"HL"}); %任意の点へP2P
 agent.input_transform = THRUST2THROTTLE_DRONE(agent,InputTransform_Thrust2Throttle_drone()); % (Simと異なる部分)
 
 run("ExpBase");
 agent.cha_allocation.reference = "time_varying";
 agent.controller.nominal = HLC(agent,Controller_HL(dt));
-agent.controller.mec = SIMPLE_MEC(agent);
+agent.controller.mec = SIMPLE_MEC(agent, Controller_SIMPLE_MEC(dt));
 agent.cha_allocation.controller = ["nominal","mec"]; % cha_allocationにコントローラー登録
 
 function post(app)
 LW = 1.5; % Linewidth 
 FS = 20; % Fontsize
 phase = "tfl";
-phase = "f";
+% phase = "f";
 app.logger.plot({1, "p", "er"},"ax",app.UIAxes,"phase",phase, "Linewidth",LW, "Fontsize",FS);
-app.logger.plot({{1, "p", "er"}, {1, "controller.result.nominal_p", ""}},"phase",phase, "fig_num",1, "Linewidth",LW, "Fontsize",FS); % 位置: p_x,p_y,p_z
-app.logger.plot({{1, "q", "e"}, {1, "controller.result.nominal_q", ""}}, "phase",phase, "fig_num",2, "Linewidth",LW, "Fontsize",FS); % 角度: θ_roll, θ_pitch, θ_yaw
-app.logger.plot({{1, "v", "er"}, {1, "controller.result.nominal_v", ""}}, "phase",phase, "fig_num",3, "Linewidth",LW, "Fontsize",FS);% 速度: v_x, v_y, v_z
-app.logger.plot({{1, "w", "e"}, {1, "controller.result.nominal_w", ""}}, "phase",phase, "fig_num",4, "Linewidth",LW, "Fontsize",FS); % 角速度: ω_roll, ω_ptich, ω_yaw
-% app.logger.plot({1, "p", "er"},"phase",phase, "fig_num",1, "Linewidth",LW, "Fontsize",FS); % 位置: p_x,p_y,p_z
-% app.logger.plot({1, "q", "e"}, "phase",phase, "fig_num",2, "Linewidth",LW, "Fontsize",FS); % 角度: θ_roll, θ_pitch, θ_yaw
-% app.logger.plot({1, "v", "er"}, "phase",phase, "fig_num",3, "Linewidth",LW, "Fontsize",FS);% 速度: v_x, v_y, v_z
-% app.logger.plot({1, "w", "e"}, "phase",phase, "fig_num",4, "Linewidth",LW, "Fontsize",FS); % 角速度: ω_roll, ω_ptich, ω_yaw
+app.logger.plot({1, "p", "er"},"phase",phase, "fig_num",1, "Linewidth",LW, "Fontsize",FS); % 位置: p_x,p_y,p_z
+app.logger.plot({1, "q", "e"}, "phase",phase, "fig_num",2, "Linewidth",LW, "Fontsize",FS); % 角度: θ_roll, θ_pitch, θ_yaw
+app.logger.plot({1, "v", "er"}, "phase",phase, "fig_num",3, "Linewidth",LW, "Fontsize",FS);% 速度: v_x, v_y, v_z
+app.logger.plot({1, "w", "e"}, "phase",phase, "fig_num",4, "Linewidth",LW, "Fontsize",FS); % 角速度: ω_roll, ω_ptich, ω_yaw
 app.logger.plot({1, "input", ""}, "phase",phase, "fig_num",6, "Linewidth",LW, "Fontsize",FS); % MATLAB内での制御入力: Thrust, roll, pitch, yaw
 app.logger.plot({1, "inner_input1:4", ""}, "phase",phase, "fig_num",7, "Linewidth",LW, "Fontsize",FS); % プロポ内での制御入力: Thrust, roll, pitch, yaw
 
@@ -51,6 +49,11 @@ app.logger.plot({1, "p1-p2", "er"}, "phase",phase, "color", 0, "fig_num",8, "Lin
 app.logger.plot({1, "p1-p2-p3", "er"}, "phase",phase, "color", 0, "fig_num",9, "Linewidth",LW, "Fontsize",FS); % x-y-z軌跡
 
 app.logger.plot({1, "controller.result.delta_input", ""}, "phase",phase, "fig_num",10, "Linewidth",LW, "Fontsize",FS);
+
+app.logger.plot({{1, "p", "er"}, {1, "controller.result.nominal_p", ""}},"phase",phase, "fig_num",11, "Linewidth",LW, "Fontsize",FS); % 位置: p_x,p_y,p_z
+app.logger.plot({{1, "q", "e"}, {1, "controller.result.nominal_q", ""}}, "phase",phase, "fig_num",12, "Linewidth",LW, "Fontsize",FS); % 角度: θ_roll, θ_pitch, θ_yaw
+app.logger.plot({{1, "v", "er"}, {1, "controller.result.nominal_v", ""}}, "phase",phase, "fig_num",13, "Linewidth",LW, "Fontsize",FS);% 速度: v_x, v_y, v_z
+app.logger.plot({{1, "w", "e"}, {1, "controller.result.nominal_w", ""}}, "phase",phase, "fig_num",14, "Linewidth",LW, "Fontsize",FS); % 角速度: ω_roll, ω_ptich, ω_yaw
 
 % 刻み時間描画
 t0id = find(app.logger.Data.phase==97,1,'last')+1;

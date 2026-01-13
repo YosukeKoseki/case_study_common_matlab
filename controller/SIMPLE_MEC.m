@@ -63,7 +63,7 @@ classdef SIMPLE_MEC < handle
             du_pitch    = obj.D_pitch   *[z(1); z(7); z(5); z(11)];   % p_x; v_x; θ_pitch; ω_pitch
             du_yaw      = obj.D_yaw     *[z(6); z(12)];                   % θ_yaw; ω_yaw
             obj.result.delta_input = -1*[du_thrust; du_roll; du_pitch; du_yaw]; % 符号注意！！
-            obj.result.delta_input = [0;0;0;0];  %MECなし!!!
+            % obj.result.delta_input = [0;0;0;0];  %MECなし!!!
 
             obj.result.nominal_input = varargin{5}.controller.nominal.result.input; % ノミナル入力を保存
             obj.result.input = obj.result.nominal_input + obj.result.delta_input;
