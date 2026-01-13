@@ -35,14 +35,20 @@ function Controller = Controller_MPC_K(dt, model_file, agent)
     [Controller.F, Controller.code] = select_observable(model_file);
    
     %% sim用　重み かなり難しい
-    Controller.weight.P = diag([90;130;150]);    % 位置　10,20刻み  20;1;30
+    Controller.weight.P = diag([70;70;150]);    % 位置　10,20刻み  20;1;30
     Controller.weight.Q = diag([150;150;250]);    % 姿勢角15良い気がする
-    Controller.weight.V = diag([48;48;50]);% 速度  10,20刻み  30;20;10
+    Controller.weight.V = diag([40;40;40]);% 速度  10,20刻み  30;20;10
     Controller.weight.W = diag([10;10;10]);  %角速度　1,2刻み 
     Controller.weight.R = diag([1; 1; 1; 1]); % 入力
     Controller.weight.RP =0*diag([40; 20; 20; 20]);  % 1ステップ前の入力との差    0*(無効化)
 
-   
+    % Controller.weight.P = diag([150;200;100]);    % 位置　10,20刻み  20;1;30
+    % Controller.weight.Q = 10*diag([150;150;1500]);    % 姿勢角15良い気がする
+    % Controller.weight.V = diag([150;600;120]);% 速度  10,20刻み  30;20;10
+    % Controller.weight.W = 10*diag([20;25;200]);  %角速度　1,2刻み
+    % Controller.weight.R = diag([10; 10; 5; 10]); % 入力
+    % Controller.weight.RP =1*diag([10; 10; 10; 10]);  % 1ステップ前の入力との差    0*(無効化)
+
     %% sim用　去年のモデル
     % Controller.weight.P = diag([20;20;20]);    % 位置　10,20刻み  20;1;30
     % Controller.weight.Q = diag([15;15;15]);    % 姿勢角15良い気がする
