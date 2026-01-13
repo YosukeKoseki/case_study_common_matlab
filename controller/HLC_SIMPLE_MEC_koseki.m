@@ -125,11 +125,11 @@ classdef HLC_SIMPLE_MEC_koseki < handle
             dv_z3 = obj.D_z3*(z3_p - z3_n);
             dv_z4 = obj.D_z4*(z4_p - z4_n);
 
-            % dv_z1 = 0; % MECを無しにしたいときに使う
-            % ddv_z1 = 0;
-            % dv_z2 = 0;
-            % dv_z3 = 0;
-            % dv_z4 = 0;
+             % dv_z1 = 0; % MECを無しにしたいときに使う
+             % ddv_z1 = 0;
+             % dv_z2 = 0;
+             % dv_z3 = 0;
+             % dv_z4 = 0;
 
             %TODO 仮想入力dv -> 実入力duへの変換
             vf_a = vf_n - [dv_z1, ddv_z1, 0, 0];
