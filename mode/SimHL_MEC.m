@@ -75,11 +75,11 @@ app.logger.plot({1, "q", "e"}, "phase",phase, "fig_num",2, "Linewidth",LW, "Font
 app.logger.plot({1, "v", "er"}, "phase",phase, "fig_num",3, "Linewidth",LW, "Fontsize",FS);% 速度: v_x, v_y, v_z
 app.logger.plot({1, "w", "e"}, "phase",phase, "fig_num",4, "Linewidth",LW, "Fontsize",FS); % 角速度: ω_roll, ω_ptich, ω_yaw
 app.logger.plot({1, "input", ""}, "phase",phase, "fig_num",6, "Linewidth",LW, "Fontsize",FS); % 制御入力: Thrust, roll, pitch, yaw
-app.logger.plot({1, "controller.result.nominal_input_HL", ""}, "phase",phase, "fig_num",10, "Linewidth",LW, "Fontsize",FS); % HL上での制御入力
-app.logger.plot({1, "controller.result.delta_input_HL", ""}, "phase",phase, "fig_num",11, "Linewidth",LW, "Fontsize",FS); % HL上での補償入力
-% app.logger.plot({{1, "controller.result.nominal_input_HL2:4", ""}, {1, "controller.result.delta_input_HL2:4", ""}}, "phase",phase, "fig_num",12, "Linewidth",LW, "Fontsize",FS);
-app.logger.plot({{1, "controller.result.zone_p", ""},{1,"controller.result.zone_n", ""}}, "phase",phase, "fig_num",15, "Linewidth",LW, "Fontsize",FS);
-app.logger.plot({{1, "controller.result.ztwo_p", ""},{1,"controller.result.ztwo_n", ""}}, "phase",phase, "fig_num",16, "Linewidth",LW, "Fontsize",FS);
-app.logger.plot({{1, "controller.result.zthree_p", ""},{1,"controller.result.zthree_n", ""}}, "phase",phase, "fig_num",17, "Linewidth",LW, "Fontsize",FS);
-app.logger.plot({{1, "controller.result.zfour_p", ""},{1,"controller.result.zfour_n", ""}}, "phase",phase, "fig_num",18, "Linewidth",LW, "Fontsize",FS);
+
+app.logger.plot({1, "controller.result.delta_input", ""}, "phase",phase, "fig_num",10, "Linewidth",LW, "Fontsize",FS); % 補償制御入力Δu
+
+app.logger.plot({{1, "p", "er"}, {1, "controller.result.nominal_p", ""}},"phase",phase, "fig_num",11, "Linewidth",LW, "Fontsize",FS); % プラントとノミナル位置
+app.logger.plot({{1, "q", "e"}, {1, "controller.result.nominal_q", ""}}, "phase",phase, "fig_num",12, "Linewidth",LW, "Fontsize",FS); % プラントとノミナル角度
+app.logger.plot({{1, "v", "er"}, {1, "controller.result.nominal_v", ""}}, "phase",phase, "fig_num",13, "Linewidth",LW, "Fontsize",FS);% プラントとノミナル速度
+app.logger.plot({{1, "w", "e"}, {1, "controller.result.nominal_w", ""}}, "phase",phase, "fig_num",14, "Linewidth",LW, "Fontsize",FS); % プラントとノミナル角速度
 end
