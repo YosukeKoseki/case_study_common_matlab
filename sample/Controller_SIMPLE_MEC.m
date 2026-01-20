@@ -14,16 +14,16 @@ Controller.D_pitch  = [0, 0, 0, 0];
 Controller.D_yaw    = [0, 0];
 
 
-% ↓HLで線形化した各サブシステムに適用する方
-Controller.D_z1 = [900, 20];
-Controller.D_z2 = [500, 100, 40, 40];
-Controller.D_z3 = [500, 100, 40, 40];
-Controller.D_z4 = [1, 1];
-
-% Controller.D_z1 = [1, 1];
-% Controller.D_z2 = [1, 1, 1, 1];
-% Controller.D_z3 = [1, 1, 1, 1];
-% Controller.D_z4 = [1, 1];
+% % % % ↓HLで線形化した各サブシステムに適用する方
+% % % Controller.D_z1 = [900, 20];
+% % % Controller.D_z2 = [500, 100, 40, 40];
+% % % Controller.D_z3 = [500, 100, 40, 40];
+% % % Controller.D_z4 = [1, 1];
+% % 
+% % % Controller.D_z1 = [1, 1];
+% % % Controller.D_z2 = [1, 1, 1, 1];
+% % % Controller.D_z3 = [1, 1, 1, 1];
+% % % Controller.D_z4 = [1, 1];
 
 Controller.dt = dt;
 end

@@ -17,7 +17,7 @@ in_prog_func = @(app) dfunc(app); % in progress plot
 post_func = @(app) dfunc(app); % function working at the "draw button" pushed.
 motive = Connector_Natnet_sim(dt); % imitation of Motive camera (motion capture system)
 logger = LOGGER(1, size(ts:dt:te, 2), 0, [],[]); % instance of LOOGER class for data logging
-initial_state.p = arranged_position([0, 0], 1, 1, 0);
+initial_state.p = arranged_position([0, 1], 1, 1, 0);
 initial_state.q = [1; 0; 0; 0];
 initial_state.v = [0; 0; 0];
 initial_state.w = [0; 0; 0];
@@ -42,8 +42,9 @@ agent.plant.param(1) = 0.90; % ５％増->0.7875, ５％減->0.7125
 agent.estimator = EKF(agent, Estimator_EKF(agent,dt,MODEL_CLASS(agent,Model_EulerAngle(dt, initial_state, 1)),["p", "q"]));
 agent.sensor = MOTIVE(agent, Sensor_Motive(1,0, motive));
 agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",10,"init",[0;0;1],"radius",0},"HL"}); %原点でホバリング
-%agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",10,"init",[1;1;1],"radius",1.0},"HL"}); %円軌道
+% agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",20,"init",[0;0;1],"radius",1.0},"HL"}); %円軌道 ref_ini=(0,1,1)
 % agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"freq",10,"init",[1;1;1],"radius",0},"HL"}); %任意の点へP2P
+% agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_saddle",{"freq",20,"orig",[0;0;1],"size",[0,0,0.5]},"HL"}); % z方向へのsin波 周期T=freq/2
 
 run("ExpBase");
 agent.cha_allocation.reference = "time_varying";
