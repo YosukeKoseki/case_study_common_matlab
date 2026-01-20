@@ -34,6 +34,10 @@ classdef SIMPLE_MEC < handle
             obj.D_roll      = param.D_roll;
             obj.D_pitch     = param.D_pitch;
             obj.D_yaw       = param.D_yaw;
+
+            msg = "表示内容\n" + ...
+                "ref:px, py, pz,  NaN,  est:px, py, pz  NaN,  delta T\n\n";
+            fprintf(msg);
         end
         
         function result = do(obj, varargin)
@@ -69,7 +73,7 @@ classdef SIMPLE_MEC < handle
             obj.result.input = obj.result.nominal_input + obj.result.delta_input;
             result = obj.result;
             
-            disp(obj.result.delta_input')
+            disp([obj.self.reference.result.state.p', NaN,  obj.self.estimator.result.state.p', NaN, obj.result.delta_input(1)]);
         end
     end
 end
