@@ -53,8 +53,13 @@ classdef MPC_CONTROLLER_K< handle
             obj.H = param.H; % ホライズン
             % 重みの配列サイズ変換
             obj.weight = param.weight; % 重みを変数に保存
-            obj.weight.stagestate = blkdiag(obj.weight.P, obj.weight.Q, obj.weight.V, obj.weight.W); % blkdiagで配列同士を結合
-            obj.weight.terminalstate = blkdiag(obj.weight.Pf, obj.weight.Qf, obj.weight.Vf, obj.weight.Wf);
+            % K重み無しのとき
+            % obj.weight.stagestate = blkdiag(obj.weight.P, obj.weight.Q, obj.weight.V, obj.weight.W); % blkdiagで配列同士を結合
+            % obj.weight.terminalstate = blkdiag(obj.weight.Pf, obj.weight.Qf, obj.weight.Vf, obj.weight.Wf); 
+            % K重みありのとき
+            obj.weight.stagestate = blkdiag(obj.weight.P, obj.weight.Q, obj.weight.V, obj.weight.W, obj.weight.K); % blkdiagで配列同士を結合
+            obj.weight.terminalstate = blkdiag(obj.weight.Pf, obj.weight.Qf, obj.weight.Vf, obj.weight.Wf, obj.weight.Kf);
+            
             obj.weight.input = param.weight.R;  % 目標入力
             obj.weight.preinputdif = param.weight.RP; % 前ステップとの入力
             % 入力の初期化
@@ -103,7 +108,10 @@ classdef MPC_CONTROLLER_K< handle
         function K_MPC(obj)
             n = size(obj.state.current,1); % number of observables
             %qp def
-            Q = blkdiag(kron(eye(obj.param.H-1),blkdiag(obj.weight.stagestate,0*eye(n-12))),blkdiag(obj.weight.terminalstate,0*eye(n-12)));
+            % K重みなしのとき
+            % Q = blkdiag(kron(eye(obj.param.H-1),blkdiag(obj.weight.stagestate,0*eye(n-12))),blkdiag(obj.weight.terminalstate,0*eye(n-12)));
+            % K重みありのとき
+            Q = blkdiag(kron(eye(obj.param.H-1),blkdiag(obj.weight.stagestate)),blkdiag(obj.weight.terminalstate));
             R = kron(eye(obj.param.H),obj.weight.input);
             RP = kron(eye(obj.param.H),obj.weight.preinputdif);
             Xr = reshape([obj.state.ref(1:12,:);zeros(n-12,obj.param.H)],[],1);

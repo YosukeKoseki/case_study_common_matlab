@@ -35,10 +35,11 @@ function Controller = Controller_MPC_K(dt, model_file, agent)
     [Controller.F, Controller.code] = select_observable(model_file);
    
     %% sim用　重み かなり難しい
-    Controller.weight.P = diag([70;70;150]);    % 位置　10,20刻み  20;1;30
-    Controller.weight.Q = diag([150;150;250]);    % 姿勢角15良い気がする
+    Controller.weight.P = diag([75;75;150]);    % 位置　10,20刻み  20;1;30
+    Controller.weight.Q = diag([150;150;150]);    % 姿勢角15良い気がする
     Controller.weight.V = diag([40;40;40]);% 速度  10,20刻み  30;20;10
     Controller.weight.W = diag([10;10;10]);  %角速度　1,2刻み 
+    Controller.weight.K = diag([1;1;1;1;1;1;1;1;1;1;1;1;1;1]); %残りの観測量14状態
     Controller.weight.R = diag([1; 1; 1; 1]); % 入力
     Controller.weight.RP =0*diag([40; 20; 20; 20]);  % 1ステップ前の入力との差    0*(無効化)
 
@@ -83,6 +84,7 @@ function Controller = Controller_MPC_K(dt, model_file, agent)
     Controller.weight.Vf = Controller.weight.V;
     Controller.weight.Qf = Controller.weight.Q;
     Controller.weight.Wf = Controller.weight.W;
+    Controller.weight.Kf = Controller.weight.K;
     Controller.test.sigma = 1; % 標準偏差を固定
     Controller.test.input = 0; % 推力以外の入力を0固定: 0:固定なし,1:トルク,2:自由
     %% 以下は変更なし
