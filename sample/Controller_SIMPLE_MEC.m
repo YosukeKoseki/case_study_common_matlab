@@ -6,7 +6,7 @@ function Controller= Controller_SIMPLE_MEC(dt)
 % Controller.D_thrust = [560, 20]; % Sim, m=0.825,0.9
 
 % Controller.D_thrust = [100, 10]; % Exp, m=0.75
-Controller.D_thrust = [0, 10]; % Exp, m=0.825
+Controller.D_thrust = [300,10 ]; % Exp, m=0.825
 % Controller.D_thrust = [560, 20]; % Exp, m=0.825,0.9
 
 Controller.D_roll   = [0, 0, 0, 0];
