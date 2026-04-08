@@ -25,6 +25,7 @@ agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"gen_ref_circle",{"
 % agent.reference.time_varying = TIME_VARYING_REFERENCE(agent,{"case_study_trajectory",{"freq",10,"init",[0;0;1]},"HL"});
 agent.controller        = HLC(agent,Controller_HL(dt));
 agent.input_transform   = THRUST2THROTTLE_DRONE(agent,InputTransform_Thrust2Throttle_drone()); % (Simと異なる部分)
+% agent.input_transform   = INPUTTRANSFORM_AUTOTUNE(agent,InputTransform_Thrust2Throttle_drone());
 
 run("ExpBase");
 agent.cha_allocation.reference = "time_varying";
